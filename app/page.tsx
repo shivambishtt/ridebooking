@@ -25,7 +25,7 @@ function page() {
             <div className="space-y-3">
               <p className="text-primary text-3xl font-bold">01</p>
               <h3 className="text-xl font-semibold text-foreground">
-                Choose Ride
+                Choose Ride 🚖
               </h3>
               <p className="text-muted-foreground text-sm">
                 Select bike or cab and enter your pickup & drop location.
@@ -37,7 +37,7 @@ function page() {
             <div className="space-y-3">
               <p className="text-primary text-3xl font-bold">02</p>
               <h3 className="text-xl font-semibold text-foreground">
-                Track Driver
+                Track Driver 📍
               </h3>
               <p className="text-muted-foreground text-sm">
                 Get matched instantly and track your driver in real-time.
@@ -49,7 +49,7 @@ function page() {
             <div className="space-y-3">
               <p className="text-primary text-3xl font-bold">03</p>
               <h3 className="text-xl font-semibold text-foreground">
-                Reach Destination
+                Reach Destination 📌
               </h3>
               <p className="text-muted-foreground text-sm">
                 Enjoy a smooth ride with transparent pricing and safety.
