@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import bcrypt from "bcrypt";
 
 enum Role {
   captain = "captain",
@@ -42,3 +43,12 @@ const userSchema = new Schema<User>(
 
 export const User =
   mongoose?.models?.User<User> ?? mongoose.model<User>("User", userSchema);
+
+userSchema.pre("save", async function () {
+  if (!this.isModified("password"))
+    try {
+      this.password = await bcrypt.hash("password", 10);
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+});
