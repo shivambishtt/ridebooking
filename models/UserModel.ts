@@ -5,17 +5,18 @@ enum Role {
   captain = "captain",
   user = "user",
 }
-interface User extends Document {
+interface IUser extends Document {
   name: string;
   email: string;
   password?: string;
   provider: "credentials" | "google" | "github";
   role: Role;
+  isVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const userSchema = new Schema<User>(
+const userSchema = new Schema<IUser>(
   {
     name: {
       type: String,
@@ -42,7 +43,7 @@ const userSchema = new Schema<User>(
 );
 
 export const User =
-  mongoose?.models?.User<User> ?? mongoose.model<User>("User", userSchema);
+  mongoose?.models?.User<IUser> ?? mongoose.model<IUser>("User", userSchema);
 
 userSchema.pre("save", async function () {
   if (!this.isModified("password"))
