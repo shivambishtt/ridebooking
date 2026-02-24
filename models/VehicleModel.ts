@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-enum VehicleCategory {
+enum VehicleType {
   FOUR_WHEELER = "fourWheeler",
   TRI_WHEELER = "triWheeler",
   TWO_WHEELER = "twoWheeler",
@@ -8,7 +8,7 @@ enum VehicleCategory {
 
 interface IVehicle extends Document {
   captain: Schema.Types.ObjectId;
-  vehicleType: VehicleCategory;
+  vehicleType: VehicleType;
   vehicleNumberPlate: string;
   isVerified: boolean;
   createdAt: Date;
@@ -25,8 +25,8 @@ const vehicleSchema = new Schema<IVehicle>(
     },
     vehicleType: {
       type: String,
-      enum: Object.values(VehicleCategory),
-      default: VehicleCategory.FOUR_WHEELER,
+      enum: Object.values(VehicleType),
+      default: VehicleType.FOUR_WHEELER,
       required: true,
     },
     vehicleNumberPlate: {
