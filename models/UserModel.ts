@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 
 enum Role {
   captain = "captain",
-  user = "user",
+  rider = "rider",
 }
 interface IUser extends Document {
   name: string;

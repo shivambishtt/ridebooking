@@ -8,18 +8,8 @@ enum RideStatus {
   CANCELLED = "cancelled",
   TIMEOUT = "timeout",
 }
-enum PaymentStatus {
-  PENDING = "pending",
-  FAILED = "failed",
-  COMPLETED = "completed",
-}
 
-enum PaymentMode {
-  UPI = "UPI",
-  CASH = "Cash",
-}
-
-interface IRide {
+interface IRide extends Document {
   rider: Schema.Types.ObjectId;
   captain?: Schema.Types.ObjectId | null;
   pickupLocation: string;
@@ -27,8 +17,7 @@ interface IRide {
   status: RideStatus;
   fare: number;
   distance: number;
-  paymentStatus: PaymentStatus;
-  paymentMode: PaymentMode;
+  payment?: Schema.Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -67,17 +56,10 @@ const rideSchema = new Schema<IRide>(
       type: Number,
       required: true,
     },
-    paymentStatus: {
-      type: String,
-      enum: Object.values(PaymentStatus),
-      default: PaymentStatus.PENDING,
-      required: true,
-    },
-    paymentMode: {
-      type: String,
-      enum: Object.values(PaymentMode),
-      default: PaymentMode.UPI,
-      required: true,
+    payment: {
+      type: Schema.Types.ObjectId,
+      ref: "Payment",
+      default: null,
     },
   },
   { timestamps: true },
@@ -85,3 +67,32 @@ const rideSchema = new Schema<IRide>(
 
 export const Ride =
   mongoose?.models?.Ride<IRide> ?? mongoose.model<IRide>("Ride", rideSchema);
+
+rideSchema.pre("save", async function () {
+  if (!this.isModified("status")) return;
+
+  const validTransitions: Record<string, string[]> = {
+    searching: ["booked", "timeout", "cancelled"],
+    booked: ["ongoing", "cancelled"],
+    ongoing: ["completed", "cancelled"],
+    completed: [],
+    cancelled: [],
+    timeout: [],
+  };
+
+  const previousStatus = this.$__.priorDoc?.status;
+
+  if (
+    previousStatus &&
+    !validTransitions[previousStatus]?.includes(this.status)
+  ) {
+    throw new Error("Invalid ride status transition");
+  }
+});
+
+
+rideSchema.pre("save", async function () {
+  if (!this.isModified("distance")) return;
+  const farePerKM: number = 12;
+  this.fare = farePerKM * this.distance;
+});
