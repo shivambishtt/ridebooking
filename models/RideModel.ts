@@ -90,7 +90,6 @@ rideSchema.pre("save", async function () {
   }
 });
 
-
 rideSchema.pre("save", async function () {
   if (!this.isModified("distance")) return;
   const farePerKM: number = 12;
