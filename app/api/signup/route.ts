@@ -6,7 +6,7 @@ import connectDB from "@/lib/connectDB";
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
-    const { name, email, password, role } = await req.json();
+    const { name, email, password } = await req.json();
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
       name,
       email,
       password: hashedPassword,
-      role: role || "user",
     });
 
     return NextResponse.json(
