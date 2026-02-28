@@ -16,9 +16,11 @@ function Navbar() {
           </ul>
         </div>
         <div>
-          <Button className="bg-primary px-4  py-0.5 border rounded-md hover:cursor-pointer ">
-            Signup
-          </Button>
+          <Link href="/signup">
+            <Button className="bg-primary px-4  py-0.5 border rounded-md hover:cursor-pointer ">
+              Signup
+            </Button>
+          </Link>
         </div>
       </nav>
     </header>
