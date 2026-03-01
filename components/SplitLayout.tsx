@@ -16,7 +16,7 @@ export default function SplitLayout({
     <div className="min-h-screen flex items-center justify-center bg-muted/40 px-4">
       <Card className="w-full lg:w-1/2 min-h-125 grid md:grid-cols-2 shadow-2xl rounded-2xl overflow-hidden">
         {/* Left Section */}
-        <div className="hidden md:flex flex-col justify-center  p-10 ">
+        <div className="hidden md:flex flex-col justify-center p-10 ">
           <h1 className="text-5xl font-extrabold mb-6 text-foreground">
             {title}
           </h1>
