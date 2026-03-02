@@ -89,7 +89,7 @@ export default function SignupForm() {
             )}
           />
 
-          <Button type="submit" className="w-full hover:cursor-pointer">
+          <Button type="submit" className="w-full mt-2 hover:cursor-pointer">
             Create Account
           </Button>
         </form>

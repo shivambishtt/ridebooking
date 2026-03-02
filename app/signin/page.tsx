@@ -15,8 +15,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import SplitLayout from "@/components/SplitLayout";
 import { signinFormSchema } from "@/validations/formValidation";
+import { signIn } from "next-auth/react";
+import { toast } from "sonner";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SigninForm() {
+  const router = useRouter();
+  const [buttonClicked, setButtonClicked] = useState<boolean>(false);
+
   const form = useForm<z.infer<typeof signinFormSchema>>({
     resolver: zodResolver(signinFormSchema),
     defaultValues: {
@@ -26,13 +33,31 @@ export default function SigninForm() {
   });
 
   async function onSubmit(values: z.infer<typeof signinFormSchema>) {
-    await fetch("/api/signin", {
-      method: "POST",
-      body: JSON.stringify({
-        email: values.email,
-        password: values.password,
-      }),
+    setButtonClicked(true);
+    const response = await signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      redirect: false,
     });
+    if (response?.ok) {
+      router.push("/");
+    }
+    if (response?.error) {
+      toast.error(response.error, {
+        position: "top-center",
+        style: {
+          background: "#D50419",
+        },
+      });
+    } else {
+      toast.success("Signin successful", {
+        position: "top-center",
+        style: {
+          background: "#418B24",
+        },
+      });
+    }
+    setButtonClicked(false);
   }
 
   return (
@@ -70,9 +95,15 @@ export default function SigninForm() {
             )}
           />
 
-          <Button type="submit" className="w-full">
-            Sign In
-          </Button>
+          {buttonClicked ? (
+            <Button disabled={buttonClicked} className="w-full">
+              Loading
+            </Button>
+          ) : (
+            <Button type="submit" className="w-full">
+              Sign In
+            </Button>
+          )}
         </form>
       </Form>
     </SplitLayout>

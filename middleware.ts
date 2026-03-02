@@ -7,6 +7,7 @@ async function proxy(req: NextRequest) {
     req,
     secret: process.env.NEXTAUTH_SECRET,
   });
+  const role = token?.role;
 
   if (!token) {
     return;
@@ -15,6 +16,30 @@ async function proxy(req: NextRequest) {
 
   if (token && pathname.startsWith("/signin")) {
     return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  const publicRoutes = ["/", "/signin", "/signup"];
+  const captainRoutes = ["/dashboard", "/my-rides", "earning"];
+  const userRoutes = ["/book-ride"];
+
+  if (!token && !publicRoutes.includes(pathname)) {
+    return NextResponse.redirect(new URL("/signin", req.url));
+  }
+
+  if (token) {
+    if (
+      role === "captain" &&
+      !captainRoutes.some((route) => pathname.startsWith(route))
+    ) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+
+    if (
+      role === "user" &&
+      !userRoutes.some((route) => pathname.startsWith(route))
+    ) {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
   }
 }
 

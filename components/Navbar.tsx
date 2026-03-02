@@ -1,10 +1,19 @@
 "use client";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import { toast } from "sonner";
 
 function Navbar() {
   const session = useSession();
+  const handleLogout = async () => {
+    const response = await signOut();
+    if (response?.ok) {
+      toast.success("Logged out sucessfully");
+    } else {
+      toast.error("An unknown error occured");
+    }
+  };
   return (
     <header>
       <nav className="bg-card h-18 mx-auto w-2/4 rounded-3xl mt-6 flex items-center justify-between text-center px-6">
@@ -20,15 +29,19 @@ function Navbar() {
         </div>
         <div>
           {session?.data?.user ? (
-            <Link href="/logout">
-              <Button className="bg-primary px-4  py-0.5 border rounded-md hover:cursor-pointer ">
+            <Link href="/">
+              <Button
+                onClick={handleLogout}
+                variant="destructive"
+                className="bg-primary px-4  py-0.5 border rounded-md hover:cursor-pointer "
+              >
                 Logout
               </Button>
             </Link>
           ) : (
-            <Link href="/signup">
+            <Link href="/signin">
               <Button className="bg-primary px-4  py-0.5 border rounded-md hover:cursor-pointer ">
-                Signup
+                Signin
               </Button>
             </Link>
           )}
