@@ -26,7 +26,13 @@ export default function SigninForm() {
   });
 
   async function onSubmit(values: z.infer<typeof signinFormSchema>) {
-    console.log(values);
+    await fetch("/api/signin", {
+      method: "POST",
+      body: JSON.stringify({
+        email: values.email,
+        password: values.password,
+      }),
+    });
   }
 
   return (

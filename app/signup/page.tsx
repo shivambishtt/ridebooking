@@ -15,8 +15,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { signupFormSchema } from "@/validations/formValidation";
+import { useRouter } from "next/navigation";
 
 export default function SignupForm() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof signupFormSchema>>({
     resolver: zodResolver(signupFormSchema),
     defaultValues: {
@@ -27,7 +29,15 @@ export default function SignupForm() {
   });
 
   async function onSubmit(values: z.infer<typeof signupFormSchema>) {
-    console.log(values);
+    await fetch("/api/signup", {
+      method: "POST",
+      body: JSON.stringify({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      }),
+    });
+    router.push("/");
   }
 
   return (

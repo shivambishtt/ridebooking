@@ -1,7 +1,10 @@
+"use client";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { useSession } from "next-auth/react";
 
 function Navbar() {
+  const session = useSession();
   return (
     <header>
       <nav className="bg-card h-18 mx-auto w-2/4 rounded-3xl mt-6 flex items-center justify-between text-center px-6">
@@ -16,11 +19,19 @@ function Navbar() {
           </ul>
         </div>
         <div>
-          <Link href="/signup">
-            <Button className="bg-primary px-4  py-0.5 border rounded-md hover:cursor-pointer ">
-              Signup
-            </Button>
-          </Link>
+          {session?.data?.user ? (
+            <Link href="/logout">
+              <Button className="bg-primary px-4  py-0.5 border rounded-md hover:cursor-pointer ">
+                Logout
+              </Button>
+            </Link>
+          ) : (
+            <Link href="/signup">
+              <Button className="bg-primary px-4  py-0.5 border rounded-md hover:cursor-pointer ">
+                Signup
+              </Button>
+            </Link>
+          )}
         </div>
       </nav>
     </header>

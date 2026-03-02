@@ -1,7 +1,12 @@
 "use client";
 import Squares from "./Squares";
+import { SessionProvider } from "next-auth/react";
 
-function Providers({ children }) {
+interface Props {
+  children: React.ReactNode;
+}
+
+function Providers({ children }: Props) {
   return (
     <div className="relative min-h-screen">
       <div className="fixed inset-0 -z-10 flex items-center justify-center pointer-events-none">
@@ -13,8 +18,7 @@ function Providers({ children }) {
           hoverFillColor="#222"
         />
       </div>
-
-      {children}
+      <SessionProvider>{children}</SessionProvider>
     </div>
   );
 }

@@ -62,6 +62,8 @@ export async function POST(req: NextRequest) {
       maxAge: 7 * 24 * 60 * 60,
       path: "/",
     });
+
+    return response;
   } catch (error: any) {
     return NextResponse.json(
       { message: "An unknown error occured", error: error.message },
