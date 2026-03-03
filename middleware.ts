@@ -19,7 +19,7 @@ async function proxy(req: NextRequest) {
   }
 
   const publicRoutes = ["/", "/signin", "/signup"];
-  const captainRoutes = ["/dashboard", "/my-rides", "earning"];
+  const captainRoutes = ["/dashboard", "/my-rides", "/earning"];
   const userRoutes = ["/book-ride"];
 
   if (!token && !publicRoutes.includes(pathname)) {

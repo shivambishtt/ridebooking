@@ -10,6 +10,9 @@ interface IVehicle extends Document {
   captain: Schema.Types.ObjectId;
   vehicleType: VehicleType;
   vehicleNumberPlate: string;
+  vehicleBrand: string;
+  vehicleColor: string;
+  vehicleModel: string;
   isVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -33,6 +36,17 @@ const vehicleSchema = new Schema<IVehicle>(
       type: String,
       required: true,
       unique: true,
+    },
+    vehicleBrand: {
+      type: String,
+      required: true,
+    },
+    vehicleColor: {
+      type: String,
+    },
+    vehicleModel: {
+      type: String,
+      required: true,
     },
     isVerified: {
       type: Boolean,
