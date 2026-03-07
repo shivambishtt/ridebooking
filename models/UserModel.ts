@@ -1,17 +1,12 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 
-enum Role {
-  captain = "captain",
-  rider = "rider",
-}
 interface IUser extends Document {
   name: string;
   email: string;
   password?: string;
+  phoneNumber: string;
   provider: "credentials" | "google" | "github";
-  role: Role;
-  isVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -32,9 +27,9 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: [true, "Password is required"],
     },
-    role: {
+    phoneNumber: {
       type: String,
-      default: Role.captain,
+      reqiured: [true, "Phone number is required"],
     },
   },
   {

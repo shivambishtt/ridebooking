@@ -1,6 +1,6 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-enum VehicleType {
+export enum VehicleType {
   FOUR_WHEELER = "fourWheeler",
   TRI_WHEELER = "triWheeler",
   TWO_WHEELER = "twoWheeler",
@@ -9,7 +9,7 @@ enum VehicleType {
 interface IVehicle extends Document {
   captain: Schema.Types.ObjectId;
   vehicleType: VehicleType;
-  vehicleNumberPlate: string;
+  vehicleNumber: string;
   vehicleBrand: string;
   vehicleColor: string;
   vehicleModel: string;
@@ -22,7 +22,7 @@ const vehicleSchema = new Schema<IVehicle>(
   {
     captain: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Captain",
       required: true,
       unique: true,
     },
@@ -32,7 +32,7 @@ const vehicleSchema = new Schema<IVehicle>(
       default: VehicleType.FOUR_WHEELER,
       required: true,
     },
-    vehicleNumberPlate: {
+    vehicleNumber: {
       type: String,
       required: true,
       unique: true,

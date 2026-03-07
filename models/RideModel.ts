@@ -31,7 +31,7 @@ const rideSchema = new Schema<IRide>(
     },
     captain: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Captain",
       default: null,
     },
     pickupLocation: {
