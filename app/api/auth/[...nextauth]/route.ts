@@ -5,6 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import connectDB from "@/lib/connectDB";
 import { User } from "@/models/UserModel";
 import bcrypt from "bcrypt";
+import { Captain } from "@/models/CaptainModel";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -22,31 +23,35 @@ export const authOptions: NextAuthOptions = {
       name: "Credentials",
       credentials: {
         email: {},
-        username: {},
         password: {},
       },
 
       async authorize(credentials) {
         await connectDB();
+        const { email, password } = credentials!;
 
-        const user = await User.findOne({
-          email: credentials?.email,
-        });
+        let account = await User.findOne({ email });
+        let role = "user";
 
-        if (!user) throw new Error("No user found");
+        if (!account) {
+          account = await Captain.findOne({ email });
+          role = "captain";
+        }
 
-        const isValid = await bcrypt.compare(
-          credentials!.password,
-          user.password,
-        );
+        if (!account) {
+          throw new Error("No account found with this email");
+        }
+
+        const isValid = await bcrypt.compare(password, account.password);
 
         if (!isValid)
           throw new Error("Invalid password. Please check your password");
 
         return {
-          id: user._id.toString(),
-          email: user.email,
-          name: user.name,
+          id: account._id.toString(),
+          email: account.email,
+          name: account.name,
+          role,
         };
       },
     }),

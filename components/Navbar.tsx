@@ -7,12 +7,8 @@ import { toast } from "sonner";
 function Navbar() {
   const session = useSession();
   const handleLogout = async () => {
-    const response = await signOut();
-    if (response?.ok) {
-      toast.success("Logged out sucessfully");
-    } else {
-      toast.error("An unknown error occured");
-    }
+    await signOut();
+    toast.success("Logged out sucessfully");
   };
   return (
     <header>

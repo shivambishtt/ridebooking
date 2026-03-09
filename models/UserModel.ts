@@ -30,6 +30,7 @@ const userSchema = new Schema<IUser>(
     phoneNumber: {
       type: String,
       reqiured: [true, "Phone number is required"],
+      unique: true,
     },
   },
   {

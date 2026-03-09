@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import bcrypt from "bcrypt";
 
 export interface ICaptain extends Document {
   name: string;
@@ -8,13 +9,14 @@ export interface ICaptain extends Document {
   provider: "credentials" | "google" | "github";
   rating: number;
   isAvailable: boolean;
+  socketId?: string;
 }
 
 const captainSchema = new Schema<ICaptain>(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "Name is required"],
       trim: true,
     },
 
@@ -32,10 +34,8 @@ const captainSchema = new Schema<ICaptain>(
 
     phoneNumber: {
       type: String,
-      phoneNumber: {
-        type: String,
-        reqiured: [true, "Phone number is required"],
-      },
+      reqiured: [true, "Phone number is required"],
+      unique: true,
     },
     rating: {
       type: Number,
@@ -46,6 +46,10 @@ const captainSchema = new Schema<ICaptain>(
       type: Boolean,
       default: false,
     },
+    socketId: {
+      type: String,
+      // required: true,
+    },
   },
   { timestamps: true },
 );
@@ -53,3 +57,12 @@ const captainSchema = new Schema<ICaptain>(
 export const Captain =
   mongoose.models?.Captain ??
   mongoose.model<ICaptain>("Captain", captainSchema);
+
+captainSchema.pre("save", async function () {
+  if (!this.isModified("password"))
+    try {
+      this.password = await bcrypt.hash("password", 10);
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+});

@@ -6,20 +6,22 @@ import connectDB from "@/lib/connectDB";
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
-    const { name, email, password } = await req.json();
+    const { name, email, password, phoneNumber } = await req.json();
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !phoneNumber) {
       return NextResponse.json(
         { message: "All fields are required" },
         { status: 400 },
       );
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({
+      $or: [{ email }, { phoneNumber }],
+    });
 
     if (existingUser) {
       return NextResponse.json(
-        { message: "User already exists with this email" },
+        { message: "User already exists with this email or phone number" },
         { status: 409 },
       );
     }

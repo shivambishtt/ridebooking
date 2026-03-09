@@ -36,6 +36,12 @@ const vehicleSchema = new Schema<IVehicle>(
       type: String,
       required: true,
       unique: true,
+      uppercase: true,
+      trim: true,
+      match: [
+        /^[A-Z]{2}[0-9]{1,2}[A-Z]{1,2}[0-9]{4}$/,
+        "Invalid vehicle number plate format",
+      ],
     },
     vehicleBrand: {
       type: String,
@@ -59,3 +65,10 @@ const vehicleSchema = new Schema<IVehicle>(
 export const Vehicle =
   mongoose?.models?.Vehicle<IVehicle> ??
   mongoose.model<IVehicle>("Vehicle", vehicleSchema);
+
+vehicleSchema.pre("save", async function () {
+  this.vehicleNumber = this.vehicleNumber.replace(/\s/g, "").toUpperCase();
+  return
+});
+
+vehicleSchema.index({ vehicleNumberPlate: 1 });
