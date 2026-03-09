@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Vehicle } from "@/models/VehicleModel";
 import connectDB from "@/lib/connectDB";
-import { authOptions } from "../../[...nextauth]/route";
+import validNumberPlate from "@/lib/validNumberPlate";
+import { authOptions } from "../../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 
 export async function POST(req: NextRequest) {
@@ -19,9 +20,10 @@ export async function POST(req: NextRequest) {
         status: 400,
       });
     }
+
     const {
       vehicleType,
-      vehicleNumberPlate,
+      vehicleNumber,
       vehicleBrand,
       vehicleColor,
       vehicleModel,
@@ -29,7 +31,7 @@ export async function POST(req: NextRequest) {
 
     if (
       !vehicleType ||
-      !vehicleNumberPlate ||
+      !vehicleNumber ||
       !vehicleBrand ||
       !vehicleColor ||
       !vehicleModel
@@ -40,8 +42,15 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    if (!validNumberPlate(vehicleNumber)) {
+      return NextResponse.json(
+        { message: "Invalid vehicle number plate format" },
+        { status: 400 },
+      );
+    }
+
     const plateExists = await Vehicle.findOne({
-      vehicleNumberPlate,
+      vehicleNumber,
     });
 
     if (plateExists) {
@@ -64,7 +73,7 @@ export async function POST(req: NextRequest) {
 
     const vehicle = await Vehicle.create({
       vehicleType,
-      vehicleNumberPlate,
+      vehicleNumber,
       vehicleBrand,
       vehicleColor,
       vehicleModel,
@@ -78,9 +87,11 @@ export async function POST(req: NextRequest) {
       status: 201,
     });
   } catch (error) {
-    return NextResponse.json({
-      message: "An unknown error occured",
-      status: 500,
-    });
+    console.error("Vehicle API Error:", error);
+
+    return NextResponse.json(
+      { message: "An unknown error occured" },
+      { status: 500 },
+    );
   }
 }

@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     if (existingUser) {
       return NextResponse.json(
-        { message: "User already exists with this email or phone number" },
+        { message: "Account already exists with this email or phone number" },
         { status: 409 },
       );
     }
@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
       name,
       email,
       password: hashedPassword,
+      phoneNumber,
     });
 
     return NextResponse.json(

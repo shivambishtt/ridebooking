@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 enum RideStatus {
   SEARCHING = "searching",
-  BOOKED = "booked",
+  ACCEPTED = "accepted",
   ONGOING = "ongoing",
   COMPLETED = "completed",
   CANCELLED = "cancelled",

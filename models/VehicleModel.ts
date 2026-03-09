@@ -1,9 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export enum VehicleType {
-  FOUR_WHEELER = "fourWheeler",
-  TRI_WHEELER = "triWheeler",
-  TWO_WHEELER = "twoWheeler",
+  FOUR_WHEELER = "four-wheeler",
+  TRI_WHEELER = "three-wheeler",
+  TWO_WHEELER = "two-wheeler",
 }
 
 interface IVehicle extends Document {
@@ -29,7 +29,7 @@ const vehicleSchema = new Schema<IVehicle>(
     vehicleType: {
       type: String,
       enum: Object.values(VehicleType),
-      default: VehicleType.FOUR_WHEELER,
+      default: VehicleType.TWO_WHEELER,
       required: true,
     },
     vehicleNumber: {
@@ -39,7 +39,7 @@ const vehicleSchema = new Schema<IVehicle>(
       uppercase: true,
       trim: true,
       match: [
-        /^[A-Z]{2}[0-9]{1,2}[A-Z]{1,2}[0-9]{4}$/,
+        /^[A-Z]{2}[0-9]{1,2}[A-Z]{1,3}[0-9]{4}$/,
         "Invalid vehicle number plate format",
       ],
     },
@@ -68,7 +68,7 @@ export const Vehicle =
 
 vehicleSchema.pre("save", async function () {
   this.vehicleNumber = this.vehicleNumber.replace(/\s/g, "").toUpperCase();
-  return
+  return;
 });
 
 vehicleSchema.index({ vehicleNumberPlate: 1 });

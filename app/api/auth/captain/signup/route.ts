@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     if (existingCaptain) {
       return NextResponse.json(
-        { message: "Captain already exists with this email or phone number" },
+        { message: "Account already exists with this email or phone number" },
         { status: 409 },
       );
     }
