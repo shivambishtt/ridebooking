@@ -46,11 +46,10 @@ const rideSchema = new Schema<IRide>(
       type: String,
       enum: Object.values(RideStatus),
       default: RideStatus.SEARCHING,
-      required: true,
+      // required: true,
     },
     fare: {
       type: Number,
-      required: true,
     },
     distance: {
       type: Number,
@@ -65,15 +64,12 @@ const rideSchema = new Schema<IRide>(
   { timestamps: true },
 );
 
-export const Ride =
-  mongoose?.models?.Ride<IRide> ?? mongoose.model<IRide>("Ride", rideSchema);
-
 rideSchema.pre("save", async function () {
   if (!this.isModified("status")) return;
 
   const validTransitions: Record<string, string[]> = {
-    searching: ["booked", "timeout", "cancelled"],
-    booked: ["ongoing", "cancelled"],
+    searching: ["accepted", "timeout", "cancelled"],
+    accepted: ["ongoing", "cancelled"],
     ongoing: ["completed", "cancelled"],
     completed: [],
     cancelled: [],
@@ -93,5 +89,8 @@ rideSchema.pre("save", async function () {
 rideSchema.pre("save", async function () {
   if (!this.isModified("distance")) return;
   const farePerKM: number = 12;
-  this.fare = farePerKM * this.distance;
+  this.fare = this.distance * farePerKM;
 });
+
+export const Ride =
+  mongoose?.models?.Ride<IRide> ?? mongoose.model<IRide>("Ride", rideSchema);
