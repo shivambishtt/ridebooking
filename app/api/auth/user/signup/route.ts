@@ -47,9 +47,11 @@ export async function POST(req: NextRequest) {
       },
       { status: 201 },
     );
-  } catch (error: any) {
+  } catch (error) {
+    console.error("Error in signup", error);
+
     return NextResponse.json(
-      { message: "An unknown error occured", error: error.message },
+      { message: "Something went wrong" },
       { status: 500 },
     );
   }

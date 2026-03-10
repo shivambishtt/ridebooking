@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
 import { Ride } from "@/models/RideModel";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "../../auth/[...nextauth]/route";
 import { User } from "@/models/UserModel";
 import { Captain } from "@/models/CaptainModel";
 
 export async function POST(req: NextRequest) {
-  await connectDB();
   try {
+    await connectDB();
     const session = await getServerSession(authOptions);
 
     if (!session || session.user.role !== "user") {
@@ -16,13 +16,13 @@ export async function POST(req: NextRequest) {
         {
           message: "Unauthorized request",
         },
-        { status: 400 },
+        { status: 401 },
       );
     }
 
-    const { pickupLocation, dropLocation, userId, distance } = await req.json();
+    const { pickupLocation, dropLocation, rider, distance } = await req.json();
 
-    if (!pickupLocation || !dropLocation || !userId || !distance) {
+    if (!pickupLocation || !dropLocation || !rider || !distance) {
       return NextResponse.json(
         {
           message: "All fields are required",
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(rider);
     if (!user) {
       return NextResponse.json(
         {
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
       );
     }
     const ride = await Ride.create({
-      rider: userId,
+      rider,
       pickupLocation,
       dropLocation,
       distance,
@@ -62,8 +62,9 @@ export async function POST(req: NextRequest) {
       { status: 201 },
     );
   } catch (error) {
+    console.error("Error in creating ride",error);
     return NextResponse.json(
-      { error: "An unknown error occured" },
+      { message: "Something went wrong" },
       { status: 500 },
     );
   }

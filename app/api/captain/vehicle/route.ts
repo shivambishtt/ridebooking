@@ -88,9 +88,8 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error("Vehicle API Error:", error);
-
     return NextResponse.json(
-      { message: "An unknown error occured" },
+      { message: "Something went wrong" },
       { status: 500 },
     );
   }

@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
     );
   } catch (error: any) {
     return NextResponse.json(
-      { message: "An unknown error occured", error: error.message },
+      { message: "Something went wrong"},
       { status: 500 },
     );
   }
