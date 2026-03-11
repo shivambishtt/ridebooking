@@ -1,36 +1,216 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚗 RideBooking App
 
-## Getting Started
+A full-stack **ride booking platform** that allows users to request rides and captains (drivers) to accept and manage them.
 
-First, run the development server:
+This project demonstrates **modern full-stack development**, including authentication, REST APIs, role-based access control, and scalable backend architecture using **Next.js and MongoDB**.
+
+---
+
+## 🚀 Features
+
+### 👤 User Features
+- Register and login securely
+- Book rides by providing pickup and destination
+- View ride details and ride status
+- Track ride requests
+
+### 🚖 Captain Features
+- Register as a captain
+- Add and manage vehicle details
+- View available ride requests
+- Accept or reject rides
+- Manage ride status
+
+### 🔐 Authentication & Authorization
+- Secure authentication using **NextAuth**
+- Role-based access control:
+  - `User`
+  - `Captain`
+- Protected API routes
+
+### 📡 API System
+- RESTful APIs built using **Next.js API routes**
+- Modular backend structure
+- Middleware for route protection
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+- **Next.js**
+- **React**
+- **Tailwind CSS**
+
+### Backend
+- **Next.js API Routes**
+- **Node.js**
+
+### Database
+- **MongoDB**
+- **Mongoose**
+
+### Authentication
+- **NextAuth.js**
+
+### Tools
+- **Git**
+- **GitHub**
+- **Postman (API Testing)**
+
+---
+
+## 📂 Project Structure
+
+```
+ridebooking/
+│
+├── app/
+│   ├── api/
+│   │   ├── auth/
+│   │   ├── ride/
+│   │   ├── captain/
+│   │   ├── vehicle/
+│   │   └── payment/
+│   │
+│   ├── login/
+│   ├── register/
+│   └── dashboard/
+│
+├── models/
+│   ├── UserModel.ts
+│   ├── CaptainModel.ts
+│   ├── RideModel.ts
+│   ├── VehicleModel.ts
+│   └── PaymentModel.ts
+│
+├── lib/
+│   ├── connectDB.ts
+│   └── validNumberPlate.ts
+│
+├── components/
+│
+└── README.md
+```
+
+---
+
+## 🚗 Vehicle Management
+
+Captains can register and manage their vehicles.
+
+Features include:
+
+- Add vehicle details
+- Validate vehicle number plate
+- Associate vehicle with captain
+- Store vehicle information in MongoDB
+
+---
+
+## 💳 Payment System
+
+The platform includes a payment model to manage ride payments.
+
+Features include:
+
+- Store payment details for rides
+- Link payments with ride records
+- Track payment status
+
+---
+
+## 🧩 Utility Functions
+
+Utility functions help maintain clean and reusable logic.
+
+### `validNumberPlate`
+
+A helper function used to validate vehicle number plates before storing them in the database.
+
+This ensures that only properly formatted vehicle numbers are accepted.
+
+---
+
+## ⚙️ Installation
+
+### 1️⃣ Clone the repository
+
+```bash
+git clone https://github.com/shivambishtt/ridebooking.git
+cd ridebooking
+```
+
+### 2️⃣ Install dependencies
+
+```bash
+npm install
+```
+
+### 3️⃣ Create environment variables
+
+Create a `.env.local` file in the root directory and add:
+
+```env
+MONGODB_URI=your_mongodb_connection_string
+NEXTAUTH_SECRET=your_secret
+NEXTAUTH_URL=http://localhost:3000
+```
+
+### 4️⃣ Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open the application in your browser:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🔑 API Overview
 
-To learn more about Next.js, take a look at the following resources:
+### Authentication
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+POST /api/auth/register
+POST /api/auth/login
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Ride
 
-## Deploy on Vercel
+```
+POST /api/ride/create
+GET  /api/ride
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Captain
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+POST /api/captain/vehicle
+GET  /api/captain/rides
+```
+
+### Payment
+
+```
+POST /api/payment
+GET  /api/payment
+```
+
+
+---
+
+## 👨‍💻 Author
+
+**Shivam Bisht**
+
+GitHub:  
+https://github.com/shivambishtt
+
+---
+
+⭐ If you like this project, consider giving it a **star** on GitHub!

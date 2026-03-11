@@ -12,9 +12,16 @@ enum RideStatus {
 interface IRide extends Document {
   rider: Schema.Types.ObjectId;
   captain?: Schema.Types.ObjectId | null;
-  pickupLocation: string;
-  dropLocation: string;
+  pickupLocation: {
+    address: string;
+    coordinates: number[];
+  };
+  dropLocation: {
+    address: string;
+    coordinates: number[];
+  };
   status: RideStatus;
+  estimatedFare: number;
   fare: number;
   distance: number;
   payment?: Schema.Types.ObjectId | null;
@@ -35,24 +42,33 @@ const rideSchema = new Schema<IRide>(
       default: null,
     },
     pickupLocation: {
-      type: String,
-      required: true,
+      address: String,
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
     },
     dropLocation: {
-      type: String,
+      address: String,
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
+    },
+    distance: {
+      type: Number,
       required: true,
+    },
+    estimatedFare: {
+      type: Number,
+    },
+    fare: {
+      type: Number,
     },
     status: {
       type: String,
       enum: Object.values(RideStatus),
       default: RideStatus.SEARCHING,
-      // required: true,
-    },
-    fare: {
-      type: Number,
-    },
-    distance: {
-      type: Number,
       required: true,
     },
     payment: {
@@ -88,8 +104,10 @@ rideSchema.pre("save", async function () {
 
 rideSchema.pre("save", async function () {
   if (!this.isModified("distance")) return;
-  const farePerKM: number = 12;
-  this.fare = this.distance * farePerKM;
+  const BASE_FARE = 40;
+  const FARE_PER_KM = 12;
+
+  this.estimatedFare = BASE_FARE + this.distance * FARE_PER_KM;
 });
 
 export const Ride =

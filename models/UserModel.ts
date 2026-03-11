@@ -6,6 +6,10 @@ interface IUser extends Document {
   email: string;
   password?: string;
   phoneNumber: string;
+  location?: {
+    type: "Point";
+    coorindates: number[];
+  };
   provider: "credentials" | "google" | "github";
   createdAt: Date;
   updatedAt: Date;
@@ -29,8 +33,20 @@ const userSchema = new Schema<IUser>(
     },
     phoneNumber: {
       type: String,
-      reqiured: [true, "Phone number is required"],
+      required: [true, "Phone number is required"],
       unique: true,
+    },
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+      },
+      coordinates: [Number],
+    },
+    provider: {
+      type: String,
+      enum: ["credentials", "google", "github"],
+      default: "credentials",
     },
   },
   {
@@ -42,10 +58,10 @@ export const User =
   mongoose?.models?.User<IUser> ?? mongoose.model<IUser>("User", userSchema);
 
 userSchema.pre("save", async function () {
-  if (!this.isModified("password"))
-    try {
-      this.password = await bcrypt.hash("password", 10);
-    } catch (error: any) {
-      throw new Error(error.message);
-    }
+  if (this.isModified("password")) return;
+  try {
+    this.password = await bcrypt.hash("password", 10);
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
 });

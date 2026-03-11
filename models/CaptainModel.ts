@@ -9,6 +9,10 @@ export interface ICaptain extends Document {
   provider: "credentials" | "google" | "github";
   rating: number;
   isAvailable: boolean;
+  location: {
+    type: "Point";
+    coordinates: number[];
+  };
   socketId?: string;
 }
 
@@ -34,8 +38,13 @@ const captainSchema = new Schema<ICaptain>(
 
     phoneNumber: {
       type: String,
-      reqiured: [true, "Phone number is required"],
+      required: [true, "Phone number is required"],
       unique: true,
+    },
+    provider: {
+      type: String,
+      enum: ["credentials", "google", "github"],
+      default: "credentials",
     },
     rating: {
       type: Number,
@@ -46,6 +55,18 @@ const captainSchema = new Schema<ICaptain>(
       type: Boolean,
       default: false,
     },
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
+      },
+
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
+    },
     socketId: {
       type: String,
       // required: true,
@@ -54,15 +75,16 @@ const captainSchema = new Schema<ICaptain>(
   { timestamps: true },
 );
 
+captainSchema.index({ location: "2dsphere" });
+
+captainSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+  try {
+    this.password = await bcrypt.hash("password", 10);
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+});
 export const Captain =
   mongoose.models?.Captain ??
   mongoose.model<ICaptain>("Captain", captainSchema);
-
-captainSchema.pre("save", async function () {
-  if (!this.isModified("password"))
-    try {
-      this.password = await bcrypt.hash("password", 10);
-    } catch (error: any) {
-      throw new Error(error.message);
-    }
-});

@@ -27,7 +27,6 @@ export async function POST(req: NextRequest) {
         { status: 400 },
       );
     }
-
     const captain = await Captain.findOne({ _id: session.user.id });
 
     if (!captain || !captain.isAvailable) {

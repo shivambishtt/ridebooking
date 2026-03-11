@@ -31,6 +31,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const [pickupLongitude, pickupLatitude] = pickupLocation.coordinates;
+
     const user = await User.findById(rider);
     if (!user) {
       return NextResponse.json(
@@ -41,28 +43,57 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const captains = await Captain.find({ isAvailable: true }).limit(5);
+    const captains = await Captain.find({
+      isAvailable: true,
+      location: {
+        $near: {
+          $geometry: {
+            type: "Point",
+            coordinates: [pickupLongitude, pickupLatitude],
+          },
+          $maxDistance: 5000,
+        },
+      },
+    }).limit(5);
+
     if (captains.length === 0) {
       return NextResponse.json(
         { error: "No captains available right now" },
         { status: 400 },
       );
     }
+
+    const availableCaptains = captains.map((captain) => {
+      return captain._id;
+    });
+
     const ride = await Ride.create({
       rider,
       pickupLocation,
       dropLocation,
       distance,
+      status: "searching",
+      availableCaptains,
     });
+
     return NextResponse.json(
       {
-        message: "Ride created successfully",
-        ride,
+        message: "Ride requested successfully, waiting for captain to accept",
+        ride: {
+          _id: ride._id,
+          status: ride.status,
+          pickupLocation: ride.pickupLocation,
+          dropLocation: ride.dropLocation,
+          distance: ride.distance,
+          fare: ride.fare,
+          createdAt: ride.createdAt,
+        },
+        captainsNearby: captains.length,
       },
       { status: 201 },
     );
   } catch (error) {
-    console.error("Error in creating ride",error);
+    console.error("Error in creating ride", error);
     return NextResponse.json(
       { message: "Something went wrong" },
       { status: 500 },
