@@ -36,12 +36,28 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const activeRide = await Ride.findOne({
+      captain: captain._id,
+      status: { $in: ["accepted", "ongoing"] },
+    });
+    if (activeRide) {
+      return NextResponse.json(
+        { message: "You already have an active ride" },
+        { status: 409 },
+      );
+    }
+
     // race condition
     const ride = await Ride.findOneAndUpdate(
-      { _id: rideId, status: "searching" },
+      {
+        _id: rideId,
+        status: "searching",
+        availableCaptains: { $in: [captain._id] },
+      },
       { $set: { status: "accepted", captain: captain._id } },
       { new: true },
-    );
+    ).populate("rider", "name phoneNumber");
+
     if (!ride) {
       return NextResponse.json(
         {
@@ -51,11 +67,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await Captain.findByIdAndUpdate(captain._id, { isAvailable: false });
+    await Captain.findByIdAndUpdate(captain._id, {
+      $set: {
+        isAvailable: false,
+      },
+    });
 
     return NextResponse.json({
       message: "Ride accepted",
-      ride,
+      ride: {
+        _id: ride._id,
+        status: ride.status,
+        pickupLocation: ride.pickupLocation,
+        dropLocation: ride.dropLocation,
+        distance: ride.distance,
+        fare: ride.fare,
+        createdAt: ride.createdAt,
+      },
+      rider: {
+        name: ride.rider.name,
+        phone: ride.rider.phone,
+      },
     });
   } catch (error) {
     console.error("Error in ride accept:", error);

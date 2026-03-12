@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { User } from "@/models/UserModel";
 import { Captain } from "@/models/CaptainModel";
+import { validCoordinates } from "@/lib/validCoordinates";
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,6 +29,26 @@ export async function POST(req: NextRequest) {
           message: "All fields are required",
         },
         { status: 409 },
+      );
+    }
+
+    if (distance <= 0) {
+      return NextResponse.json(
+        { message: "Invalid distance" },
+        { status: 400 },
+      );
+    }
+    if (!validCoordinates(pickupLocation.coordinates)) {
+      return NextResponse.json(
+        { message: "Invalid pickup coordinates" },
+        { status: 400 },
+      );
+    }
+
+    if (!validCoordinates(dropLocation.coordinates)) {
+      return NextResponse.json(
+        { message: "Invalid drop coordinates" },
+        { status: 400 },
       );
     }
 
@@ -85,7 +106,6 @@ export async function POST(req: NextRequest) {
           pickupLocation: ride.pickupLocation,
           dropLocation: ride.dropLocation,
           distance: ride.distance,
-          fare: ride.fare,
           createdAt: ride.createdAt,
         },
         captainsNearby: captains.length,

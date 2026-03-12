@@ -12,6 +12,7 @@ enum RideStatus {
 interface IRide extends Document {
   rider: Schema.Types.ObjectId;
   captain?: Schema.Types.ObjectId | null;
+  availableCaptains: Schema.Types.ObjectId[] | null;
   pickupLocation: {
     address: string;
     coordinates: number[];
@@ -21,7 +22,6 @@ interface IRide extends Document {
     coordinates: number[];
   };
   status: RideStatus;
-  estimatedFare: number;
   fare: number;
   distance: number;
   payment?: Schema.Types.ObjectId | null;
@@ -41,6 +41,13 @@ const rideSchema = new Schema<IRide>(
       ref: "Captain",
       default: null,
     },
+    availableCaptains: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Captain",
+        default: null,
+      },
+    ],
     pickupLocation: {
       address: String,
       coordinates: {
@@ -58,9 +65,7 @@ const rideSchema = new Schema<IRide>(
     distance: {
       type: Number,
       required: true,
-    },
-    estimatedFare: {
-      type: Number,
+      min: 0.5,
     },
     fare: {
       type: Number,
@@ -107,7 +112,7 @@ rideSchema.pre("save", async function () {
   const BASE_FARE = 40;
   const FARE_PER_KM = 12;
 
-  this.estimatedFare = BASE_FARE + this.distance * FARE_PER_KM;
+  this.fare = BASE_FARE + this.distance * FARE_PER_KM;
 });
 
 export const Ride =
