@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
       },
       rider: {
         name: ride.rider.name,
-        phone: ride.rider.phone,
+        phone: ride.rider.phoneNumber,
       },
     });
   } catch (error) {

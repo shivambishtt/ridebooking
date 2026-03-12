@@ -64,6 +64,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const activeRide = await Ride.findOne({
+      rider,
+      status: {
+        $in: ["searching", "accepted", "ongoing"],
+      },
+    });
+
+    if (activeRide) {
+      return NextResponse.json(
+        {
+          message: "You already have an active ride",
+        },
+        { status: 409 },
+      );
+    }
+
     const captains = await Captain.find({
       isAvailable: true,
       location: {
@@ -108,7 +124,7 @@ export async function POST(req: NextRequest) {
           distance: ride.distance,
           createdAt: ride.createdAt,
         },
-        captainsNearby: captains.length,
+        captainsNearby: captains,
       },
       { status: 201 },
     );

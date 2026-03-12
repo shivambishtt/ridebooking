@@ -9,7 +9,7 @@ export interface ICaptain extends Document {
   provider: "credentials" | "google" | "github";
   rating: number;
   isAvailable: boolean;
-  location: {
+  location?: {
     type: "Point";
     coordinates: number[];
   };
@@ -59,12 +59,10 @@ const captainSchema = new Schema<ICaptain>(
       type: {
         type: String,
         enum: ["Point"],
-        default: "Point",
       },
 
       coordinates: {
         type: [Number],
-        required: true,
       },
     },
     socketId: {
@@ -80,7 +78,7 @@ captainSchema.index({ location: "2dsphere" });
 captainSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   try {
-    this.password = await bcrypt.hash("password", 10);
+    this.password = await bcrypt.hash(this.password as string, 10);
   } catch (error: any) {
     throw new Error(error.message);
   }

@@ -60,7 +60,7 @@ export const User =
 userSchema.pre("save", async function () {
   if (this.isModified("password")) return;
   try {
-    this.password = await bcrypt.hash("password", 10);
+     this.password = await bcrypt.hash(this.password as string, 10);
   } catch (error: any) {
     throw new Error(error.message);
   }

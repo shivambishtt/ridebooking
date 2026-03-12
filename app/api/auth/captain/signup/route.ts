@@ -48,9 +48,10 @@ export async function POST(req: NextRequest) {
       },
       { status: 201 },
     );
-  } catch (error: any) {
+  } catch (error) {
+    console.log("Signup API error", error);
     return NextResponse.json(
-      { message: "Something went wrong"},
+      { message: "Something went wrong" },
       { status: 500 },
     );
   }
