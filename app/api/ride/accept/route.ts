@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { Captain } from "@/models/CaptainModel";
 
-export async function POST(req: NextRequest) {
+export async function PATCH(req: NextRequest) {
   try {
     await connectDB();
     const session = await getServerSession(authOptions);
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { rideId } = await req.json();
+    const rideId = req.nextUrl.searchParams.get("rideId");
     if (!rideId) {
       return NextResponse.json(
         {
@@ -47,7 +47,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // race condition
     const ride = await Ride.findOneAndUpdate(
       {
         _id: rideId,
