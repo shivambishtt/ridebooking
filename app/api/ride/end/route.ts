@@ -5,12 +5,12 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { Ride } from "@/models/RideModel";
 import mongoose from "mongoose";
+import { calculateFare } from "@/lib/calculateFare";
 
 export async function PATCH(req: NextRequest) {
   try {
     await connectDB();
     const session = await getServerSession(authOptions);
-
     if (!session || session.user.role !== "captain") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
@@ -37,6 +37,8 @@ export async function PATCH(req: NextRequest) {
       { new: true },
     );
 
+    const fare = calculateFare(ride.distance);
+
     if (!ride) {
       return NextResponse.json(
         { message: "Ride not found or not ongoing" },
@@ -52,7 +54,7 @@ export async function PATCH(req: NextRequest) {
       {
         message: "Ride completed successfully. Collect fare",
         ride: {
-          fare: ride.fare,
+          fare,
         },
       },
       { status: 200 },

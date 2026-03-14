@@ -6,6 +6,7 @@ import { authOptions } from "../../auth/[...nextauth]/route";
 import { User } from "@/models/UserModel";
 import { Captain } from "@/models/CaptainModel";
 import { validCoordinates } from "@/lib/validCoordinates";
+import mongoose from "mongoose";
 
 export async function POST(req: NextRequest) {
   try {
@@ -32,6 +33,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!mongoose.Types.ObjectId.isValid(rider)) {
+      return NextResponse.json({ message: "Invalid Ride ID" }, { status: 400 });
+    }
     if (distance <= 0) {
       return NextResponse.json(
         { message: "Invalid distance" },

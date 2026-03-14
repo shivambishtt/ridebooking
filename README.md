@@ -17,8 +17,10 @@ This project demonstrates **modern full-stack development**, including authentic
 ### 🚖 Captain Features
 - Register as a captain
 - Add and manage vehicle details
+- Go online / offline by updating location
 - View available ride requests
-- Accept or reject rides
+- Accept rides
+- Start and end rides
 - Manage ride status
 
 ### 🔐 Authentication & Authorization
@@ -69,7 +71,12 @@ ridebooking/
 │   ├── api/
 │   │   ├── auth/
 │   │   ├── ride/
+│   │   │   ├── create/
+│   │   │   ├── accept/
+│   │   │   ├── start/
+│   │   │   └── end/
 │   │   ├── captain/
+│   │   │   └── update-location/
 │   │   ├── vehicle/
 │   │   └── payment/
 │   │
@@ -86,12 +93,118 @@ ridebooking/
 │
 ├── lib/
 │   ├── connectDB.ts
+│   ├── validCoordinates.ts
 │   └── validNumberPlate.ts
 │
 ├── components/
 │
 └── README.md
 ```
+
+---
+
+## 🔑 API Reference
+
+### 🔐 Authentication
+
+| Method | Endpoint | Description | Role |
+|--------|----------|-------------|------|
+| `POST` | `/api/auth/register` | Register a new user or captain | Public |
+| `POST` | `/api/auth/login` | Login and get session | Public |
+
+---
+
+### 🚗 Ride
+
+#### `POST /api/ride/create`
+Create a new ride request. Finds available captains within 5km of pickup.
+
+**Role:** User
+
+**Body:**
+```json
+{
+  "pickupLocation": {
+    "type": "Point",
+    "coordinates": [78.209, 29.613]
+  },
+  "dropLocation": {
+    "type": "Point",
+    "coordinates": [78.300, 29.700]
+  },
+  "rider": "userId",
+  "distance": 12.5
+}
+```
+
+**Ride Status Flow:**
+```
+searching → accepted → ongoing → completed
+```
+
+---
+
+#### `PATCH /api/ride/accept?rideId=<id>`
+Captain accepts a ride request. Marks ride as `accepted` and captain as unavailable.
+
+**Role:** Captain
+
+- Checks captain is available
+- Checks captain has no active ride
+- Uses atomic update to prevent race conditions
+
+---
+
+#### `PATCH /api/ride/start?rideId=<id>`
+Captain starts the ride after arriving at pickup. Transitions ride from `accepted` → `ongoing`.
+
+**Role:** Captain
+
+---
+
+#### `PATCH /api/ride/end?rideId=<id>`
+Captain ends the ride at destination. Transitions ride from `ongoing` → `completed` and marks captain as available again.
+
+**Role:** Captain
+
+---
+
+### 🧑‍✈️ Captain
+
+#### `PATCH /api/captain/update-location`
+Captain updates their current location and goes online (marks as available).
+
+**Role:** Captain
+
+**Body:**
+```json
+{
+  "coordinates": [78.209, 29.613]
+}
+```
+
+> ⚠️ MongoDB requires a `2dsphere` index on the `location` field for geospatial queries to work.
+> ```ts
+> CaptainSchema.index({ location: "2dsphere" });
+> ```
+
+---
+
+### 🚘 Vehicle
+
+| Method | Endpoint | Description | Role |
+|--------|----------|-------------|------|
+| `POST` | `/api/vehicle` | Add a vehicle for a captain | Captain |
+| `GET` | `/api/vehicle` | Get captain's vehicle details | Captain |
+
+---
+
+### 💳 Payment
+
+| Method | Endpoint | Description | Role |
+|--------|----------|-------------|------|
+| `POST` | `/api/payment` | Create a payment record for a ride | User |
+| `GET` | `/api/payment` | Get payment details | User/Captain |
 
 ---
 
@@ -122,13 +235,11 @@ Features include:
 
 ## 🧩 Utility Functions
 
-Utility functions help maintain clean and reusable logic.
-
 ### `validNumberPlate`
+Validates vehicle number plates before storing them in the database, ensuring only properly formatted vehicle numbers are accepted.
 
-A helper function used to validate vehicle number plates before storing them in the database.
-
-This ensures that only properly formatted vehicle numbers are accepted.
+### `validCoordinates`
+Validates that location coordinates are in the correct format `[longitude, latitude]` before processing ride or location requests.
 
 ---
 
@@ -168,39 +279,6 @@ Open the application in your browser:
 ```
 http://localhost:3000
 ```
-
----
-
-## 🔑 API Overview
-
-### Authentication
-
-```
-POST /api/auth/register
-POST /api/auth/login
-```
-
-### Ride
-
-```
-POST /api/ride/create
-GET  /api/ride
-```
-
-### Captain
-
-```
-POST /api/captain/vehicle
-GET  /api/captain/rides
-```
-
-### Payment
-
-```
-POST /api/payment
-GET  /api/payment
-```
-
 
 ---
 
