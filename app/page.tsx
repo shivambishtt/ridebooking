@@ -3,7 +3,7 @@ function page() {
     <div>
       <section className="min-h-[50vh] flex items-center justify-center px-6">
         <div className="text-center space-y-6 max-w-3xl">
-          <h1 className="text-6xl font-bold ">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl  font-bold ">
             Ride Smarter.
             <br />
             Ride with
@@ -20,8 +20,8 @@ function page() {
           <h1 className="text-4xl items-center font-bold ">How it Works</h1>
         </div>
 
-        <div className="flex items-center justify-center gap-6 mt-8">
-          <div className="bg-card border border-border w-2/5 p-6 rounded-2xl">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-8">
+          <div className="bg-card border border-border w-full md:w-2/5 p-6 rounded-2xl">
             <div className="space-y-3">
               <p className="text-primary text-3xl font-bold">01</p>
               <h3 className="text-xl font-semibold text-foreground">
@@ -33,7 +33,7 @@ function page() {
             </div>
           </div>
 
-          <div className="bg-card border border-border w-2/5 p-6 rounded-2xl">
+          <div className="bg-card border border-border w-full md:w-2/5 p-6 rounded-2xl">
             <div className="space-y-3">
               <p className="text-primary text-3xl font-bold">02</p>
               <h3 className="text-xl font-semibold text-foreground">
@@ -45,7 +45,7 @@ function page() {
             </div>
           </div>
 
-          <div className="bg-card border border-border w-2/5 p-6 rounded-2xl">
+          <div className="bg-card border border-border w-full md:w-2/5 p-6 rounded-2xl">
             <div className="space-y-3">
               <p className="text-primary text-3xl font-bold">03</p>
               <h3 className="text-xl font-semibold text-foreground">
