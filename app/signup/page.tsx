@@ -29,7 +29,7 @@ export default function SignupForm() {
   });
 
   async function onSubmit(values: z.infer<typeof signupFormSchema>) {
-    await fetch("/api/signup", {
+    await fetch("/api/user/signup", {
       method: "POST",
       body: JSON.stringify({
         name: values.name,
@@ -52,7 +52,7 @@ export default function SignupForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Full Name</FormLabel>
+                <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -83,6 +83,19 @@ export default function SignupForm() {
                 <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="phonenumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone Number</FormLabel>
+                <FormControl>
+                  <Input type="text" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
