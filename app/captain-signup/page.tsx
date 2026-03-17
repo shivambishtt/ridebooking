@@ -33,6 +33,9 @@ export default function SignupForm() {
   async function onSubmit(values: z.infer<typeof signupFormSchema>) {
     const response = await fetch("/api/auth/captain/signup", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(values),
     });
 
