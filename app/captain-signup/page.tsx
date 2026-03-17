@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { signupFormSchema } from "@/validations/formValidation";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -26,19 +27,24 @@ export default function SignupForm() {
       email: "",
       password: "",
       phoneNumber: "",
-      vehicleType: "",
-      vehicleNumber: "",
-      vehicleColor: "",
-      vehicleBrand: "",
-      vehicleModel: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof signupFormSchema>) {
-    await fetch("/api/captain/signup", {
+    const response = await fetch("/api/auth/captain/signup", {
       method: "POST",
       body: JSON.stringify(values),
     });
+
+    const data = await response.json();
+    if (!response.ok) {
+      toast.error(data.message, {
+        position: "top-center",
+        style: {
+          background: "#D50419",
+        },
+      });
+    }
     router.push("/");
   }
 
@@ -49,13 +55,26 @@ export default function SignupForm() {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="captain-info">
+          <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Captain Name</FormLabel>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phoneNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone Number</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -90,78 +109,6 @@ export default function SignupForm() {
                   <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className=" grid grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="vehicleType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Vehicle Type</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="vehicleBrand"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Vehicle Brand</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="vehicleModel"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Vehicle Model</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="vehicleColor"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Vehicle Color</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="vehicleNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Vehicle Number</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -5,11 +5,6 @@ export const signupFormSchema = z.object({
   email: z.string().email("Invalid email address."),
   password: z.string().min(8, "Password must be at least 8 characters"),
   phoneNumber: z.string().min(10, "Invalid Number").max(10, "Invalid Number"),
-  vehicleType: z.string(),
-  vehicleColor: z.string(),
-  vehicleNumber: z.string(),
-  vehicleBrand: z.string(),
-  vehicleModel: z.string(),
 });
 
 export const signinFormSchema = z.object({

@@ -9,21 +9,21 @@ async function proxy(req: NextRequest) {
   });
   const role = token?.role;
 
-  if (!token) {
-    return;
-  }
   const { pathname } = req.nextUrl;
+  const publicRoutes = ["/", "/signin", "/signup", "/captain-signup"];
+  const captainRoutes = ["/dashboard", "/account", "/rides"];
+  const userRoutes = ["/book-ride"];
 
   if (token && pathname.startsWith("/signin")) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  const publicRoutes = ["/", "/signin", "/signup"];
-  const captainRoutes = ["/dashboard", "/my-rides", "/earning"];
-  const userRoutes = ["/book-ride"];
+  if (!token && captainRoutes.some((route) => pathname.startsWith(route))) {
+    return NextResponse.redirect(new URL("/onboarding", req.url));
+  }
 
   if (!token && !publicRoutes.includes(pathname)) {
-    return NextResponse.redirect(new URL("/signin", req.url));
+    return NextResponse.redirect(new URL("/onboarding", req.url));
   }
 
   if (token) {
@@ -44,7 +44,7 @@ async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/signin"],
+  matcher: ["/signin", "/account", "/rides"],
 };
 
 export default proxy;

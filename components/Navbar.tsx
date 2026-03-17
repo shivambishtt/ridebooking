@@ -59,9 +59,9 @@ function Navbar() {
               Logout
             </Button>
           ) : (
-            <Link href="/signin">
+            <Link href="/onboarding">
               <Button className="text-sm px-4 py-1.5 rounded-xl hover:cursor-pointer">
-                Sign in
+                Signup
               </Button>
             </Link>
           )}
