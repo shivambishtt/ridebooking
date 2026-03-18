@@ -1,9 +1,8 @@
-import { VehicleType } from "@/models/VehicleModel";
 import validNumberPlate from "@/lib/validNumberPlate";
 import z from "zod";
 
 export const vehicleFormSchema = z.object({
-  vehicleType: z.enum(VehicleType),
+  vehicleType: z.string(),
   vehicleNumber: z
     .string()
     .trim()
@@ -12,5 +11,6 @@ export const vehicleFormSchema = z.object({
       message: "Invalid vehicle number plate",
     }),
   vehicleBrand: z.string().min(2, "Invalid vehicle brand name"),
+  vehicleColor: z.string().min(3, "Invalid color"),
   vehicleModel: z.string(),
 });
