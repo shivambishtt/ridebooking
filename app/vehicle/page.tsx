@@ -16,6 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { toast } from "sonner";
 
 export default function Vehicle() {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function Vehicle() {
     try {
       setLoading(true);
 
-      const res = await fetch("/api/captain/vehicle", {
+      const response = await fetch("/api/captain/vehicle", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,14 +45,24 @@ export default function Vehicle() {
         body: JSON.stringify(values),
       });
 
-      if (!res.ok) {
-        const err = await res.text();
-        console.error(err);
-        return;
+      const data = await response.json();
+      if (!response.ok) {
+        toast.error(data.message, {
+          position: "top-center",
+          style: {
+            background: "#D50419",
+          },
+        });
+      } else {
+        toast.success(data.message, {
+          position: "top-center",
+          style: {
+            background: "#418B24",
+          },
+        });
+        form.reset();
+        router.push("/signin");
       }
-
-      form.reset();
-      router.push("/dashboard");
     } catch (error) {
       console.error(error);
     } finally {

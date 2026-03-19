@@ -19,11 +19,13 @@ import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function SigninForm() {
   const router = useRouter();
   const [buttonClicked, setButtonClicked] = useState<boolean>(false);
 
+  const session = useSession();
   const form = useForm<z.infer<typeof signinFormSchema>>({
     resolver: zodResolver(signinFormSchema),
     defaultValues: {
@@ -40,6 +42,9 @@ export default function SigninForm() {
       redirect: false,
     });
     if (response?.ok) {
+      if (session.data?.user.role === "captain") {
+        router.push("/vehicle");
+      }
       router.push("/");
     }
     if (response?.error) {

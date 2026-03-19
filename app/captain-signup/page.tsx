@@ -47,8 +47,16 @@ export default function SignupForm() {
           background: "#D50419",
         },
       });
+    } else {
+      toast.success(data.message, {
+        position: "top-center",
+        style: {
+          background: "#418B24",
+        },
+      });
+      form.reset();
+      router.push("/signin");
     }
-    router.push("/");
   }
 
   return (

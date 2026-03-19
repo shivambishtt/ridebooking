@@ -54,14 +54,14 @@ const userSchema = new Schema<IUser>(
   },
 );
 
-export const User =
-  mongoose?.models?.User<IUser> ?? mongoose.model<IUser>("User", userSchema);
-
 userSchema.pre("save", async function () {
-  if (this.isModified("password")) return;
+  if (!this.isModified("password")) return;
   try {
-     this.password = await bcrypt.hash(this.password as string, 10);
+    this.password = await bcrypt.hash(this.password as string, 10);
   } catch (error: any) {
     throw new Error(error.message);
   }
 });
+
+export const User =
+  mongoose?.models?.User<IUser> ?? mongoose.model<IUser>("User", userSchema);

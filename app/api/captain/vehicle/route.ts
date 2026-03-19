@@ -12,7 +12,10 @@ export async function POST(req: NextRequest) {
     const captainId = session?.user.id;
 
     if (!session) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { message: "Unauthorized. Please signin first" },
+        { status: 401 },
+      );
     }
     if (session?.user.role !== "captain") {
       return NextResponse.json({

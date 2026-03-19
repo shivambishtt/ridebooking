@@ -39,7 +39,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         if (!account) {
-          throw new Error("No account found with this email");
+          throw new Error("Account not found with this email");
         }
 
         const isValid = await bcrypt.compare(password, account.password);
