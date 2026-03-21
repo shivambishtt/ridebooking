@@ -11,7 +11,7 @@ async function proxy(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
   const publicRoutes = ["/", "/signin", "/signup", "/captain-signup"];
-  const captainRoutes = ["/dashboard", "/account", "/rides"];
+  const captainRoutes = ["/dashboard", "/account", "/rides", "/vehicle"];
   const userRoutes = ["/book-ride"];
 
   if (token && pathname.startsWith("/signin")) {
@@ -44,7 +44,7 @@ async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/signin", "/account", "/rides"],
+  matcher: ["/signin", "/account", "/rides", "/vehicle"],
 };
 
 export default proxy;

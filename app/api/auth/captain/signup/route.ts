@@ -26,12 +26,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const user = await Captain.create({
       name,
       email,
-      password: hashedPassword,
+      password,
       phoneNumber,
     });
 

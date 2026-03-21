@@ -26,12 +26,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const user = await User.create({
       name,
       email,
-      password: hashedPassword,
+      password,
       phoneNumber,
     });
 
@@ -43,12 +41,13 @@ export async function POST(req: NextRequest) {
           name: user.name,
           email: user.email,
           role: user.role,
+          phoneNumber,
         },
       },
       { status: 201 },
     );
   } catch (error) {
-    console.error("Error in signup", error);
+    console.error("Signup API error", error);
 
     return NextResponse.json(
       { message: "Something went wrong" },
