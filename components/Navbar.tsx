@@ -26,7 +26,7 @@ function Navbar() {
           <li>
             <Link
               href="/"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-muted"
+              className="text-md text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-muted"
             >
               Home
             </Link>
@@ -42,7 +42,7 @@ function Navbar() {
           <li>
             <Link
               href="/rides"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-muted"
+              className="text-md text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-muted"
             >
               Rides
             </Link>
@@ -60,14 +60,14 @@ function Navbar() {
             </Button>
           ) : (
             <>
-              <Link href="/onboarding">
-                <Button className="text-sm px-4 py-1.5 rounded-xl hover:cursor-pointer">
-                  Signup
-                </Button>
-              </Link>
               <Link href="/signin">
                 <Button className="text-sm px-4 py-1.5 rounded-xl hover:cursor-pointer">
                   Signin
+                </Button>
+              </Link>
+              <Link href="/onboarding">
+                <Button className="text-sm px-4 py-1.5 rounded-xl hover:cursor-pointer">
+                  Signup
                 </Button>
               </Link>
             </>

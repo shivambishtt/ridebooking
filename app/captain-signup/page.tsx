@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { signupFormSchema } from "@/validations/formValidation";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { signIn } from "next-auth/react";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -30,6 +31,12 @@ export default function SignupForm() {
     },
   });
 
+  const handleGoogleSignin = async () => {
+    await signIn("google");
+  };
+  const handleGithubSignin = async () => {
+    await signIn("github");
+  };
   async function onSubmit(values: z.infer<typeof signupFormSchema>) {
     const response = await fetch("/api/auth/captain/signup", {
       method: "POST",
@@ -121,7 +128,11 @@ export default function SignupForm() {
             )}
           />
 
-          <Button type="submit" className="w-full mt-2 hover:cursor-pointer">
+          <div className="flex justify-center gap-2 mt-1">
+            <Button onClick={handleGoogleSignin}>Google</Button>
+            <Button onClick={handleGithubSignin}>Github</Button>
+          </div>
+          <Button type="submit" className="w-full mt-1 hover:cursor-pointer">
             Create Account
           </Button>
         </form>
