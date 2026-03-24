@@ -13,7 +13,6 @@ export default function OnboardingPage() {
 
   function handleContinue() {
     if (!selectedRole) return;
-    console.log(selectedRole);
 
     if (selectedRole === "captain") {
       router.push("/captain-signup");

@@ -18,6 +18,8 @@ import { signupFormSchema } from "@/validations/formValidation";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
+import GoogleIcon from "@mui/icons-material/Google";
+import GitHubIcon from "@mui/icons-material/GitHub";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -129,8 +131,12 @@ export default function SignupForm() {
           />
 
           <div className="flex justify-center gap-2 mt-1">
-            <Button onClick={handleGoogleSignin}>Google</Button>
-            <Button onClick={handleGithubSignin}>Github</Button>
+            <Button onClick={handleGoogleSignin}>
+              <GoogleIcon />
+            </Button>
+            <Button onClick={handleGithubSignin}>
+              <GitHubIcon />
+            </Button>
           </div>
           <Button type="submit" className="w-full mt-1 hover:cursor-pointer">
             Create Account
