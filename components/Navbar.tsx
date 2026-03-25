@@ -5,6 +5,8 @@ import { signOut, useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import getInitials from "@/lib/getInitials";
 
 function Navbar() {
   const session = useSession();
@@ -79,6 +81,12 @@ function Navbar() {
           >
             {menuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
+          <Avatar>
+            <AvatarImage src="https://github.com/shivambishtt/" />
+            <AvatarFallback>
+              {getInitials(session?.data?.user?.name ?? "")}
+            </AvatarFallback>
+          </Avatar>
         </div>
       </nav>
 

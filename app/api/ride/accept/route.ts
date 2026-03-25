@@ -72,22 +72,25 @@ export async function PATCH(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({
-      message: "Ride accepted",
-      ride: {
-        _id: ride._id,
-        status: ride.status,
-        pickupLocation: ride.pickupLocation,
-        dropLocation: ride.dropLocation,
-        distance: ride.distance,
-        fare: ride.fare,
-        createdAt: ride.createdAt,
+    return NextResponse.json(
+      {
+        message: "Ride accepted",
+        ride: {
+          _id: ride._id,
+          status: ride.status,
+          pickupLocation: ride.pickupLocation,
+          dropLocation: ride.dropLocation,
+          distance: ride.distance,
+          fare: ride.fare,
+          createdAt: ride.createdAt,
+        },
+        rider: {
+          name: ride.rider.name,
+          phone: ride.rider.phoneNumber,
+        },
       },
-      rider: {
-        name: ride.rider.name,
-        phone: ride.rider.phoneNumber,
-      },
-    });
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Error in ride accept:", error);
     return NextResponse.json(

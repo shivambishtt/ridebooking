@@ -18,10 +18,12 @@ export async function POST(req: NextRequest) {
       );
     }
     if (session?.user.role !== "captain") {
-      return NextResponse.json({
-        message: "Users are not authenticated to register the vehicle",
-        status: 400,
-      });
+      return NextResponse.json(
+        {
+          message: "User not authenticated to register the vehicle",
+        },
+        { status: 400 },
+      );
     }
 
     const {
@@ -39,10 +41,12 @@ export async function POST(req: NextRequest) {
       !vehicleColor ||
       !vehicleModel
     ) {
-      return NextResponse.json({
-        message: "All fields are required to register vehicle",
-        status: 400,
-      });
+      return NextResponse.json(
+        {
+          message: "All fields are required to register vehicle",
+        },
+        { status: 400 },
+      );
     }
 
     if (!validNumberPlate(vehicleNumber)) {
@@ -68,10 +72,12 @@ export async function POST(req: NextRequest) {
     });
 
     if (vehicleAlreadyRegistered) {
-      return NextResponse.json({
-        message: "Vehicle with this ID is already registered",
-        status: 401,
-      });
+      return NextResponse.json(
+        {
+          message: "Vehicle already registered",
+        },
+        { status: 409 },
+      );
     }
 
     const vehicle = await Vehicle.create({
@@ -84,11 +90,13 @@ export async function POST(req: NextRequest) {
       isVerified: false,
     });
 
-    return NextResponse.json({
-      vehicle,
-      message: "Vehicle created successfully",
-      status: 201,
-    });
+    return NextResponse.json(
+      {
+        vehicle,
+        message: "Vehicle created successfully",
+      },
+      { status: 201 },
+    );
   } catch (error) {
     console.error("Vehicle API Error:", error);
     return NextResponse.json(
