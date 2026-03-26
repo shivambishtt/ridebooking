@@ -63,30 +63,34 @@ function Navbar() {
           ) : (
             <>
               <Link href="/signin">
-                <Button className="text-sm px-4 py-1.5 rounded-xl hover:cursor-pointer">
+                <Button className="text-sm bg-white px-4 py-1.5 rounded-xl hover:cursor-pointer hover:bg-mauve-200">
                   Signin
                 </Button>
               </Link>
               <Link href="/onboarding">
-                <Button className="text-sm px-4 py-1.5 rounded-xl hover:cursor-pointer">
+                <Button className="hidden sm:block text-sm px-4 py-1.5 rounded-xl hover:cursor-pointer">
                   Signup
                 </Button>
               </Link>
             </>
           )}
 
-          <button
+          <Button
             className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <X size={18} /> : <Menu size={18} />}
-          </button>
-          <Avatar>
-            <AvatarImage src="https://github.com/shivambishtt/" />
-            <AvatarFallback>
-              {getInitials(session?.data?.user?.name ?? "")}
-            </AvatarFallback>
-          </Avatar>
+          </Button>
+          {session.data?.user ? (
+            <Avatar>
+              <AvatarImage src="https://github.com/shivambishtt/" />
+              <AvatarFallback>
+                {getInitials(session?.data?.user?.name ?? "")}
+              </AvatarFallback>
+            </Avatar>
+          ) : (
+            ""
+          )}
         </div>
       </nav>
 

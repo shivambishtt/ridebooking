@@ -16,6 +16,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { signupFormSchema } from "@/validations/formValidation";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import GoogleIcon from "@mui/icons-material/Google";
+import GitHubIcon from "@mui/icons-material/GitHub";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -27,6 +30,13 @@ export default function SignupForm() {
       password: "",
     },
   });
+
+  const handleGoogleSignup = async () => {
+    await signIn("google");
+  };
+  const handleGithubSignup = async () => {
+    await signIn("github");
+  };
 
   async function onSubmit(values: z.infer<typeof signupFormSchema>) {
     await fetch("/api/user/signup", {
@@ -101,6 +111,14 @@ export default function SignupForm() {
               </FormItem>
             )}
           />
+          <div className="flex justify-center gap-2 mt-1">
+            <Button onClick={handleGoogleSignup}>
+              <GoogleIcon />
+            </Button>
+            <Button onClick={handleGithubSignup}>
+              <GitHubIcon />
+            </Button>
+          </div>
 
           <Button type="submit" className="w-full mt-2 hover:cursor-pointer">
             Create Account

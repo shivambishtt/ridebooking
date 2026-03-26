@@ -20,6 +20,8 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import GoogleIcon from "@mui/icons-material/Google";
+import GitHubIcon from "@mui/icons-material/GitHub";
 
 export default function SigninForm() {
   const router = useRouter();
@@ -33,6 +35,13 @@ export default function SigninForm() {
       password: "",
     },
   });
+
+  const handleGoogleSignin = async () => {
+    await signIn("google");
+  };
+  const handleGithubSignin = async () => {
+    await signIn("github");
+  };
 
   async function onSubmit(values: z.infer<typeof signinFormSchema>) {
     setButtonClicked(true);
@@ -100,15 +109,29 @@ export default function SigninForm() {
             )}
           />
 
-          {buttonClicked ? (
-            <Button disabled={buttonClicked} className="w-full">
-              Loading
+          <div>
+            {buttonClicked ? (
+              <Button disabled={buttonClicked} className="w-full">
+                Loading
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                className="w-full items-center justify-center"
+              >
+                Sign In
+              </Button>
+            )}
+          </div>
+
+          <div className="flex justify-center gap-2">
+            <Button className="w-20" onClick={handleGoogleSignin}>
+              <GoogleIcon />
             </Button>
-          ) : (
-            <Button type="submit" className="w-full">
-              Sign In
+            <Button className="w-20" onClick={handleGithubSignin}>
+              <GitHubIcon />
             </Button>
-          )}
+          </div>
         </form>
       </Form>
     </SplitLayout>

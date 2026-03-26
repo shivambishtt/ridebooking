@@ -33,10 +33,10 @@ export default function SignupForm() {
     },
   });
 
-  const handleGoogleSignin = async () => {
+  const handleGoogleSignup = async () => {
     await signIn("google");
   };
-  const handleGithubSignin = async () => {
+  const handleGithubSignup = async () => {
     await signIn("github");
   };
   async function onSubmit(values: z.infer<typeof signupFormSchema>) {
@@ -131,10 +131,10 @@ export default function SignupForm() {
           />
 
           <div className="flex justify-center gap-2 mt-1">
-            <Button onClick={handleGoogleSignin}>
+            <Button onClick={handleGoogleSignup}>
               <GoogleIcon />
             </Button>
-            <Button onClick={handleGithubSignin}>
+            <Button onClick={handleGithubSignup}>
               <GitHubIcon />
             </Button>
           </div>
