@@ -14,7 +14,12 @@ function Navbar() {
 
   const handleLogout = async () => {
     await signOut();
-    toast.success("Logged out successfully");
+    toast.success("Logged out successfully", {
+      position: "top-center",
+      style: {
+        background: "#418B24",
+      },
+    });
   };
 
   return (
@@ -76,15 +81,15 @@ function Navbar() {
           )}
 
           <Button
-            className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+            className="md:hidden bg-gray-300 rounded-lg transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <X size={18} /> : <Menu size={18} />}
           </Button>
           {session.data?.user ? (
-            <Avatar>
+            <Avatar className="sm:block hidden border-red-600">
               <AvatarImage src="https://github.com/shivambishtt/" />
-              <AvatarFallback>
+              <AvatarFallback className="bg-red-600 text-white">
                 {getInitials(session?.data?.user?.name ?? "")}
               </AvatarFallback>
             </Avatar>

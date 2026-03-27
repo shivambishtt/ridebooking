@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import GoogleIcon from "@mui/icons-material/Google";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import Link from "next/link";
 
 export default function SigninForm() {
   const router = useRouter();
@@ -109,21 +110,6 @@ export default function SigninForm() {
             )}
           />
 
-          <div>
-            {buttonClicked ? (
-              <Button disabled={buttonClicked} className="w-full">
-                Loading
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                className="w-full items-center justify-center"
-              >
-                Sign In
-              </Button>
-            )}
-          </div>
-
           <div className="flex justify-center gap-2">
             <Button className="w-20" onClick={handleGoogleSignin}>
               <GoogleIcon />
@@ -131,6 +117,29 @@ export default function SigninForm() {
             <Button className="w-20" onClick={handleGithubSignin}>
               <GitHubIcon />
             </Button>
+          </div>
+
+          <div>
+            {buttonClicked ? (
+              <Button disabled={buttonClicked} className="w-full">
+                Loading
+              </Button>
+            ) : (
+              <>
+                <Button
+                  type="submit"
+                  className="w-full items-center justify-center"
+                >
+                  Sign In
+                </Button>
+                <p className="text-sm text-primary text-center mt-4">
+                  Dont have an account?{" "}
+                  <Link href="/onboarding">
+                    <span className="text-white">Signup</span>
+                  </Link>
+                </p>
+              </>
+            )}
           </div>
         </form>
       </Form>

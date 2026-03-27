@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import GoogleIcon from "@mui/icons-material/Google";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import Link from "next/link";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -28,6 +29,7 @@ export default function SignupForm() {
       name: "",
       email: "",
       password: "",
+      phoneNumber: "",
     },
   });
 
@@ -45,6 +47,7 @@ export default function SignupForm() {
         name: values.name,
         email: values.email,
         password: values.password,
+        phoneNumber: values.phoneNumber,
       }),
     });
     router.push("/");
@@ -100,7 +103,7 @@ export default function SignupForm() {
           />
           <FormField
             control={form.control}
-            name="phonenumber"
+            name="phoneNumber"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Phone Number</FormLabel>
@@ -111,18 +114,24 @@ export default function SignupForm() {
               </FormItem>
             )}
           />
-          <div className="flex justify-center gap-2 mt-1">
-            <Button onClick={handleGoogleSignup}>
+          <div className="flex justify-center gap-2">
+            <Button className="w-20" onClick={handleGoogleSignup}>
               <GoogleIcon />
             </Button>
-            <Button onClick={handleGithubSignup}>
+            <Button className="w-20" onClick={handleGithubSignup}>
               <GitHubIcon />
             </Button>
           </div>
 
-          <Button type="submit" className="w-full mt-2 hover:cursor-pointer">
+          <Button type="submit" className="w-full hover:cursor-pointer">
             Create Account
           </Button>
+          <p className="text-sm text-primary text-center mt-4">
+            Already have an account?{" "}
+            <Link href="/signin">
+              <span className="text-white">Signin</span>
+            </Link>
+          </p>
         </form>
       </Form>
     </SplitLayout>
