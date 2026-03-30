@@ -41,7 +41,7 @@ export default function SignupForm() {
   };
 
   async function onSubmit(values: z.infer<typeof signupFormSchema>) {
-    await fetch("/api/user/signup", {
+    await fetch("/api/auth/user/signup", {
       method: "POST",
       body: JSON.stringify({
         name: values.name,

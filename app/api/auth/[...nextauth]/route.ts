@@ -51,6 +51,7 @@ export const authOptions: NextAuthOptions = {
           id: account._id.toString(),
           email: account.email,
           name: account.name,
+          phoneNumber: account.phonenNumber,
           role,
         };
       },
@@ -58,36 +59,13 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async signIn({ user, account }) {
-      await connectDB();
-
-      if (account?.provider === "google") {
-        let existingUser = await User.findOne({ email: user.email });
-
-        if (!existingUser) {
-          const isCaptain = await Captain.findOne({
-            email: user.email,
-          });
-          if (isCaptain) return true;
-
-          if (!existingUser) {
-            existingUser = await User.create({
-              name: user.name,
-              email: user.email,
-              provider: "google",
-            });
-          }
-        }
-      }
-
-      return true;
-    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
-        token.role = user.role || "user";
+        token.role = user.role;
+        token.phoneNumber = user.phoneNumber;
       }
       return token;
     },
