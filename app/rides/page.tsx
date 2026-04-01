@@ -18,6 +18,8 @@ import {
   PinIcon,
   SearchIcon,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 function Rides() {
   const session = useSession();
@@ -30,12 +32,49 @@ function Rides() {
     null,
   );
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.GOOGLE_MAP_API_KEY as string,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY!,
     libraries: ["places"],
   });
   if (!isLoaded) {
     return <p>Loading...</p>;
   }
+
+  const handleCreateRide = async () => {
+    const response = await fetch("/api/ride/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        pickupLocation: {
+          address: "Dwarka Mor",
+          coordinates: [77.1025, 28.7041],
+        },
+        dropLocation: {
+          address: "Karol Bagh",
+          coordinates: [77.2167, 28.6448],
+        },
+        rider: session?.data?.user.id,
+        distance: 5,
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      toast.error(data.message, {
+        position: "top-center",
+        style: {
+          background: "#D50419",
+        },
+      });
+    } else {
+      toast.success(data.message, {
+        position: "top-center",
+        style: {
+          background: "#418B24",
+        },
+      });
+    }
+  };
 
   return (
     <div className="p-10 min-h-screen">
@@ -88,6 +127,14 @@ function Rides() {
               </InputGroupAddon>
             </InputGroup>
           </Autocomplete>
+        </div>
+        <div
+          className="flex items-center
+         justify-center"
+        >
+          <Button className="" onClick={handleCreateRide}>
+            Request Ride
+          </Button>
         </div>
       </div>
     </div>

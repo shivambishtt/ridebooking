@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
 
     if (captains.length === 0) {
       return NextResponse.json(
-        { error: "No captains available right now" },
+        { message: "No captains available right now" },
         { status: 400 },
       );
     }

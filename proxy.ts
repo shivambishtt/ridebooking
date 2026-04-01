@@ -12,7 +12,7 @@ async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const publicRoutes = ["/", "/signin", "/signup", "/captain-signup"];
   const captainRoutes = ["/dashboard", "/account", "/rides", "/vehicle"];
-  const userRoutes = ["/book-ride"];
+  const userRoutes = ["/book-ride", "/rides"];
 
   if (token && pathname.startsWith("/signin")) {
     return NextResponse.redirect(new URL("/", req.url));
