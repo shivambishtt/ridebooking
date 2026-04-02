@@ -50,7 +50,7 @@ export default function SignupForm() {
         phoneNumber: values.phoneNumber,
       }),
     });
-    router.push("/");
+    router.push("/signin");
   }
 
   return (
@@ -90,25 +90,26 @@ export default function SignupForm() {
 
           <FormField
             control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input type="password" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="phoneNumber"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Phone Number</FormLabel>
                 <FormControl>
                   <Input type="text" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input type="password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
