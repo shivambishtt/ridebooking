@@ -13,7 +13,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const { longitude, latitude } = await req.json();
+    const { longitude, latitude, isAvailable } = await req.json();
     if (!longitude || !latitude) {
       return NextResponse.json(
         { message: "Location required" },
@@ -28,18 +28,41 @@ export async function PATCH(req: NextRequest) {
           type: "Point",
           coordinates: [longitude, latitude],
         },
-        isAvailable: true,
+        isAvailable: isAvailable,
       },
       {
         new: true,
       },
     );
     return NextResponse.json({
-      message: "Location updated. You are live now",
+      message: isAvailable
+        ? "Location updated. You are live now"
+        : "You are now offline 💤",
       captain,
     });
   } catch (error) {
     console.error("Location API error", error);
+    return NextResponse.json(
+      { message: "Something went wrong" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function GET() {
+  try {
+    await connectDB();
+    const session = await getServerSession(authOptions);
+
+    if (!session || session.user.role !== "captain") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const captain = await Captain.findById(session.user.id).select(
+      "isAvailable",
+    );
+    return NextResponse.json({ isAvailable: captain.isAvailable });
+  } catch (error) {
     return NextResponse.json(
       { message: "Something went wrong" },
       { status: 500 },
