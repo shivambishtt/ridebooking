@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
 import { Ride } from "@/models/RideModel";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import mongoose from "mongoose";
 
-export async function PATCH(req: NextRequest) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ rideId: string }> },
+) {
   try {
     await connectDB();
     const session = await getServerSession(authOptions);
@@ -18,7 +21,7 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    const rideId = req.nextUrl.searchParams.get("rideId");
+    const { rideId } = await params;
     if (!rideId) {
       return NextResponse.json(
         { message: "Ride ID is required" },

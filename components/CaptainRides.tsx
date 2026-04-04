@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import RideCard from "./RideCard";
 
 function CaptainRides() {
   const [isAvailable, setIsAvailable] = useState(false);
@@ -40,7 +41,7 @@ function CaptainRides() {
         style: { background: "#D50419" },
       });
     } else {
-      setIsAvailable(data.captain.isAvailable); // fixed: actually update the state
+      setIsAvailable(data.captain.isAvailable);
       toast.success(data.message, {
         position: "top-center",
         style: {
@@ -65,12 +66,17 @@ function CaptainRides() {
           <Label htmlFor="online">{isAvailable ? "Online" : "Offline"}</Label>
         </div>
       </div>
-      <div>
+      <div className="flex items-center justify-center flex-wrap h-[60vh]">
         {!isAvailable ? (
-          <h1 className="py-5">Welcome Captain. Go Online to get rides 🚀</h1>
+          <h1 className="text-2xl sm:text-3xl py-5 font-semibold">
+            Welcome Captain. Go Online to get rides 🚀
+          </h1>
         ) : (
-          <h1 className="py-5">Waiting for Rides</h1>
+          <h1 className="text-2xl sm:text-3xl py-5 font-semibold">
+            Waiting for Rides ⏳
+          </h1>
         )}
+      <RideCard/>
       </div>
     </div>
   );

@@ -7,8 +7,11 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import getInitials from "@/lib/getInitials";
+import { usePathname } from "next/navigation";
 
 function Navbar() {
+  const pathname = usePathname();
+  const isActive = (path: string) => pathname === path;
   const session = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -33,7 +36,9 @@ function Navbar() {
           <li>
             <Link
               href="/"
-              className="text-md text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-muted"
+              className={`text-md text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-muted ${
+                isActive("/") ? "text-primary font-semibold" : ""
+              }`}
             >
               Home
             </Link>
@@ -41,7 +46,9 @@ function Navbar() {
           <li>
             <Link
               href="/account"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-muted"
+              className={`text-md text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-muted ${
+                isActive("/account") ? "text-primary font-semibold" : ""
+              }`}
             >
               Account
             </Link>
@@ -49,7 +56,9 @@ function Navbar() {
           <li>
             <Link
               href="/rides"
-              className="text-md text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-muted"
+              className={`text-md text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-muted ${
+                isActive("/rides") ? "text-primary font-semibold" : ""
+              }`}
             >
               Rides
             </Link>
