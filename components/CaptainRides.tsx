@@ -76,7 +76,7 @@ function CaptainRides() {
             Waiting for Rides ⏳
           </h1>
         )}
-      <RideCard/>
+        <RideCard />
       </div>
     </div>
   );
