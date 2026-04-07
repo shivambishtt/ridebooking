@@ -7,7 +7,6 @@ import { User } from "@/models/UserModel";
 import { Captain } from "@/models/CaptainModel";
 import { validCoordinates } from "@/lib/validCoordinates";
 import mongoose from "mongoose";
-import { io } from "@/server";
 
 export async function POST(req: NextRequest) {
   try {
@@ -118,21 +117,22 @@ export async function POST(req: NextRequest) {
       availableCaptains,
     });
 
-    availableCaptains.forEach((captainId) => {
-      io.to(captainId.toString()).emit("new-ride", {
-        rideId: ride._id,
-        pickupLocation: {
-          address: pickupLocation.address,
-          coordinates: pickupLocation.coordinates,
+    await fetch("http://localhost:5000/emit-ride", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        captainIds: availableCaptains.map((id) => id.toString()),
+        ride: {
+          rideId: ride._id,
+          rider: user.name,
+          pickupLocation,
+          dropLocation,
+          distance,
         },
-        dropLocation: {
-          address: dropLocation.address,
-          coordinates: dropLocation.coordinates,
-        },
-        distance,
-      });
+      }),
     });
-
     return NextResponse.json(
       {
         message: "Ride requested successfully, waiting for captain to accept",

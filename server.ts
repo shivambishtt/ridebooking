@@ -3,6 +3,8 @@ import http from "http";
 import express from "express";
 
 const app = express();
+app.use(express.json());
+
 const server = http.createServer(app);
 
 const PORT = "5000";
@@ -16,18 +18,22 @@ export const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
 
-  socket.on("captain-online", ({ captainId, captainName }) => {
-    socket.join(captainId);
-    console.log(`Captain with ${captainId}  Name: ${captainName} is ONLINE`);
-  });
-
-  socket.on("ping-server", (data) => {
-    console.log("Received from client:", data);
+  socket.on("captain-online", ({ captainId }) => {
+    socket.join(captainId.toString());
+    console.log(`Captain ${captainId} joined room`);
   });
 
   socket.on("disconnect", () => {
     console.log("Client disconnected:", socket.id);
   });
+});
+
+app.post("/emit-ride", (request, response) => {
+  const { captainIds, ride } = request.body;
+  captainIds.forEach((captainId: string) => {
+    io.to(captainId).emit("new-ride", ride);
+  });
+  response.json({ success: true });
 });
 
 server.listen(PORT, () => {

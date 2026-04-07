@@ -8,8 +8,9 @@ import { Ride } from "@/models/RideModel";
 import { useSession } from "next-auth/react";
 import socket from "@/lib/socket";
 
-type Ride = {
+export type Ride = {
   rideId: string;
+  rider: string;
   pickupLocation: {
     address: string;
     coordinates: number[];
@@ -25,6 +26,7 @@ function CaptainRides() {
   const session = useSession();
   const [isAvailable, setIsAvailable] = useState(false);
   const [rides, setRides] = useState<Ride[]>([]);
+  
   useEffect(() => {
     const fetchStatus = async () => {
       const response = await fetch("/api/captain/location");
@@ -38,7 +40,6 @@ function CaptainRides() {
 
   useEffect(() => {
     socket.on("new-ride", (ride: Ride) => {
-      console.log("New Ride recieved:", ride);
       setRides((prev) => [ride, ...prev]);
     });
 
@@ -74,7 +75,6 @@ function CaptainRides() {
       if (updatedStatus) {
         socket.emit("captain-online", {
           captainId,
-          captainName: data.captain.name || session.data?.user.name,
         });
       }
       toast.success(data.message, {
@@ -110,16 +110,7 @@ function CaptainRides() {
             Waiting for Rides ⏳
           </h1>
         )}
-        <RideCard />
-
-        {rides.map((ride, index) => (
-          <div key={index} className="border p-4 my-2">
-            <h2>Ride ID: {ride.rideId}</h2>
-            <p>Distance: {ride.distance} km</p>
-            <p>Pickup: {ride.pickupLocation.address}</p>
-            <p>Drop: {ride.dropLocation.address}</p>
-          </div>
-        ))}
+        {rides.length > 0 && <RideCard rides={rides} />}
       </div>
     </div>
   );
