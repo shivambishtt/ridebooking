@@ -4,10 +4,27 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import RideCard from "./RideCard";
+import { Ride } from "@/models/RideModel";
+import { useSession } from "next-auth/react";
+import socket from "@/lib/socket";
+
+type Ride = {
+  rideId: string;
+  pickupLocation: {
+    address: string;
+    coordinates: number[];
+  };
+  dropLocation: {
+    address: string;
+    coordinates: number[];
+  };
+  distance: number;
+};
 
 function CaptainRides() {
+  const session = useSession();
   const [isAvailable, setIsAvailable] = useState(false);
-
+  const [rides, setRides] = useState<Ride[]>([]);
   useEffect(() => {
     const fetchStatus = async () => {
       const response = await fetch("/api/captain/location");
@@ -17,11 +34,21 @@ function CaptainRides() {
       }
     };
     fetchStatus();
-  }, [isAvailable]);
+  }, []);
 
-  const handleChecked = async () => {
-    const updatedStatus = !isAvailable;
+  useEffect(() => {
+    socket.on("new-ride", (ride: Ride) => {
+      console.log("New Ride recieved:", ride);
+      setRides((prev) => [ride, ...prev]);
+    });
 
+    return () => {
+      socket.off("new-ride");
+    };
+  }, []);
+
+  const handleChecked = async (checked: boolean) => {
+    const updatedStatus = checked;
     const response = await fetch("/api/captain/location", {
       method: "PATCH",
       headers: {
@@ -42,6 +69,14 @@ function CaptainRides() {
       });
     } else {
       setIsAvailable(data.captain.isAvailable);
+      const captainId = data.captain._id || session.data?.user?.id;
+
+      if (updatedStatus) {
+        socket.emit("captain-online", {
+          captainId,
+          captainName: data.captain.name || session.data?.user.name,
+        });
+      }
       toast.success(data.message, {
         position: "top-center",
         style: {
@@ -60,8 +95,7 @@ function CaptainRides() {
         <div className="flex gap-2">
           <Switch
             checked={isAvailable}
-            onCheckedChange={handleChecked}
-            id="online"
+            onCheckedChange={(checked) => handleChecked(checked)}
           />
           <Label htmlFor="online">{isAvailable ? "Online" : "Offline"}</Label>
         </div>
@@ -77,6 +111,15 @@ function CaptainRides() {
           </h1>
         )}
         <RideCard />
+
+        {rides.map((ride, index) => (
+          <div key={index} className="border p-4 my-2">
+            <h2>Ride ID: {ride.rideId}</h2>
+            <p>Distance: {ride.distance} km</p>
+            <p>Pickup: {ride.pickupLocation.address}</p>
+            <p>Drop: {ride.dropLocation.address}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

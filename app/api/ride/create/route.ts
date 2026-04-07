@@ -7,6 +7,7 @@ import { User } from "@/models/UserModel";
 import { Captain } from "@/models/CaptainModel";
 import { validCoordinates } from "@/lib/validCoordinates";
 import mongoose from "mongoose";
+import { io } from "@/server";
 
 export async function POST(req: NextRequest) {
   try {
@@ -115,6 +116,21 @@ export async function POST(req: NextRequest) {
       distance,
       status: "searching",
       availableCaptains,
+    });
+
+    availableCaptains.forEach((captainId) => {
+      io.to(captainId.toString()).emit("new-ride", {
+        rideId: ride._id,
+        pickupLocation: {
+          address: pickupLocation.address,
+          coordinates: pickupLocation.coordinates,
+        },
+        dropLocation: {
+          address: dropLocation.address,
+          coordinates: dropLocation.coordinates,
+        },
+        distance,
+      });
     });
 
     return NextResponse.json(
