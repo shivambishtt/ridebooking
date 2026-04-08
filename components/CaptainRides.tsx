@@ -26,7 +26,7 @@ function CaptainRides() {
   const session = useSession();
   const [isAvailable, setIsAvailable] = useState(false);
   const [rides, setRides] = useState<Ride[]>([]);
-  
+
   useEffect(() => {
     const fetchStatus = async () => {
       const response = await fetch("/api/captain/location");
@@ -39,14 +39,20 @@ function CaptainRides() {
   }, []);
 
   useEffect(() => {
+    socket.on("connect", () => {
+      if (isAvailable && session.data?.user.id) {
+        socket.emit("captain-online", session.data.user.id);
+      }
+    });
     socket.on("new-ride", (ride: Ride) => {
       setRides((prev) => [ride, ...prev]);
     });
 
     return () => {
       socket.off("new-ride");
+      socket.off("connect");
     };
-  }, []);
+  }, [isAvailable, session.data]);
 
   const handleChecked = async (checked: boolean) => {
     const updatedStatus = checked;
@@ -106,11 +112,15 @@ function CaptainRides() {
             Welcome Captain. Go Online to get rides 🚀
           </h1>
         ) : (
-          <h1 className="text-2xl sm:text-3xl py-5 font-semibold">
-            Waiting for Rides ⏳
-          </h1>
+          <>
+            {rides.length === 0 && (
+              <h1 className="text-2xl sm:text-3xl py-5 font-semibold">
+                Waiting for Rides ⏳
+              </h1>
+            )}
+          </>
         )}
-        {rides.length > 0 && <RideCard rides={rides} />}
+        {rides.length > 0 && isAvailable ? <RideCard rides={rides} /> : null}
       </div>
     </div>
   );

@@ -117,7 +117,7 @@ export async function POST(req: NextRequest) {
       availableCaptains,
     });
 
-    await fetch("http://localhost:5000/emit-ride", {
+    await fetch(`${process.env.SOCKET_PORT}/emit-ride`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

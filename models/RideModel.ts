@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { VehicleType } from "./VehicleModel";
 
 enum RideStatus {
   SEARCHING = "searching",
@@ -24,6 +25,7 @@ interface IRide extends Document {
   status: RideStatus;
   fare: number;
   distance: number;
+  vehicleType: VehicleType;
   payment?: Schema.Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;
@@ -67,8 +69,14 @@ const rideSchema = new Schema<IRide>(
       required: true,
       min: 0.5,
     },
+    vehicleType: {
+      type: String,
+      enum: Object.values(VehicleType),
+      default: VehicleType.TWO_WHEELER,
+    },
     fare: {
       type: Number,
+      required: true,
     },
     status: {
       type: String,
@@ -105,14 +113,6 @@ rideSchema.pre("save", async function () {
   ) {
     throw new Error("Invalid ride status transition");
   }
-});
-
-rideSchema.pre("save", async function () {
-  if (!this.isModified("distance")) return;
-  const BASE_FARE = 40;
-  const FARE_PER_KM = 12;
-
-  this.fare = BASE_FARE + this.distance * FARE_PER_KM;
 });
 
 export const Ride =

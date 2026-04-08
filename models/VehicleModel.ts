@@ -1,9 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export enum VehicleType {
-  TWO_WHEELER = "two-wheeler",
-  THREE_WHEELER = "three-wheeler",
-  FOUR_WHEELER = "four-wheeler",
+  TWO_WHEELER = "two_wheeler",
+  THREE_WHEELER = "three_wheeler",
+  FOUR_WHEELER = "four_wheeler",
 }
 
 interface IVehicle extends Document {

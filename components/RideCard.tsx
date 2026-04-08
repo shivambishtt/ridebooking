@@ -20,16 +20,12 @@ function RideCard({ rides }: { rides: Ride[] }) {
         return (
           <Card
             key={index}
-            className="w-full rounded-2xl shadow-lg border border-gray-100"
+            className="w-full mt-4 rounded-2xl shadow-lg border border-gray-100"
           >
             <CardHeader className="flex flex-row items-center gap-3 pb-2">
               <Avatar>
-                <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  alt="TS"
-                  className="grayscale"
-                />
-                <AvatarFallback>{getInitials("TS")}</AvatarFallback>
+                <AvatarImage alt="TS" className="grayscale" />
+                <AvatarFallback>{getInitials(ride.rider)}</AvatarFallback>
               </Avatar>
 
               <div className="flex items-center justify-between flex-1">
