@@ -1,11 +1,13 @@
 import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from "bcrypt";
+import { VehicleType } from "./VehicleModel";
 
 export interface ICaptain extends Document {
   name: string;
   email: string;
   password?: string;
   phoneNumber: string;
+  vehicleType: VehicleType;
   provider: "credentials" | "google" | "github";
   rating: number;
   isAvailable: boolean;
@@ -34,6 +36,11 @@ const captainSchema = new Schema<ICaptain>(
     password: {
       type: String,
       required: [true, "Password is required"],
+    },
+
+    vehicleType: {
+      type: String,
+      enum: Object.values(VehicleType),
     },
 
     phoneNumber: {

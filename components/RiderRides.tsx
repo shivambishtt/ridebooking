@@ -55,6 +55,7 @@ function RiderRides() {
         },
         rider: session?.data?.user.id,
         distance: 5,
+        vehicleType: "two_wheeler",
       }),
     });
     const data = await response.json();

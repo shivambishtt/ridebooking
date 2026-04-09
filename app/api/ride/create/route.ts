@@ -7,6 +7,8 @@ import { User } from "@/models/UserModel";
 import { Captain } from "@/models/CaptainModel";
 import { validCoordinates } from "@/lib/validCoordinates";
 import mongoose from "mongoose";
+import { calculateFare } from "@/lib/calculateFare";
+import { VehicleType } from "@/models/VehicleModel";
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,9 +24,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { pickupLocation, dropLocation, rider, distance } = await req.json();
+    const { pickupLocation, dropLocation, rider, distance, vehicleType } =
+      await req.json();
 
-    if (!pickupLocation || !dropLocation || !rider || !distance) {
+    if (
+      !pickupLocation ||
+      !dropLocation ||
+      !rider ||
+      !distance ||
+      !vehicleType
+    ) {
       return NextResponse.json(
         {
           message: "All fields are required",
@@ -33,9 +42,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!Object.values(VehicleType).includes(vehicleType)) {
+      return NextResponse.json(
+        { message: "Invalid Vehicle type" },
+        { status: 400 },
+      );
+    }
+
     if (!mongoose.Types.ObjectId.isValid(rider)) {
       return NextResponse.json({ message: "Invalid Ride ID" }, { status: 400 });
     }
+
+    const fare = calculateFare(distance, vehicleType);
+
     if (distance <= 0) {
       return NextResponse.json(
         { message: "Invalid distance" },
@@ -86,6 +105,7 @@ export async function POST(req: NextRequest) {
 
     const captains = await Captain.find({
       isAvailable: true,
+      vehicleType,
       location: {
         $near: {
           $geometry: {
@@ -113,6 +133,8 @@ export async function POST(req: NextRequest) {
       pickupLocation,
       dropLocation,
       distance,
+      fare,
+      vehicleType,
       status: "searching",
       availableCaptains,
     });
@@ -130,6 +152,8 @@ export async function POST(req: NextRequest) {
           pickupLocation,
           dropLocation,
           distance,
+          vehicleType,
+          fare,
         },
       }),
     });
@@ -142,6 +166,8 @@ export async function POST(req: NextRequest) {
           pickupLocation: ride.pickupLocation,
           dropLocation: ride.dropLocation,
           distance: ride.distance,
+          fare: ride.fare,
+          vehicleType: ride.vehicleType,
           createdAt: ride.createdAt,
         },
         captainsNearby: captains,
