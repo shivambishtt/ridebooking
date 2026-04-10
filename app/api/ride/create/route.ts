@@ -87,6 +87,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    await Ride.updateMany(
+      {
+        rider,
+        status: "searching",
+        expiresAt: {
+          $lt: new Date(),
+        },
+      },
+      { $set: { status: "timeout" } },
+    );
+
     const activeRide = await Ride.findOne({
       rider,
       status: {
@@ -96,9 +107,7 @@ export async function POST(req: NextRequest) {
 
     if (activeRide) {
       return NextResponse.json(
-        {
-          message: "You already have an active ride",
-        },
+        { message: "You already have an active ride" },
         { status: 409 },
       );
     }
@@ -128,6 +137,8 @@ export async function POST(req: NextRequest) {
       return captain._id;
     });
 
+    const expiryDate = new Date(Date.now() + 5 * 60 * 1000);
+
     const ride = await Ride.create({
       rider,
       pickupLocation,
@@ -135,6 +146,7 @@ export async function POST(req: NextRequest) {
       distance,
       fare,
       vehicleType,
+      expiresAt: expiryDate,
       status: "searching",
       availableCaptains,
     });

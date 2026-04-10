@@ -29,6 +29,7 @@ interface IRide extends Document {
   payment?: Schema.Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;
+  expiresAt: Date;
 }
 
 const rideSchema = new Schema<IRide>(
@@ -88,6 +89,10 @@ const rideSchema = new Schema<IRide>(
       type: Schema.Types.ObjectId,
       ref: "Payment",
       default: null,
+    },
+    expiresAt: {
+      type: Date,
+      required: true,
     },
   },
   { timestamps: true },
