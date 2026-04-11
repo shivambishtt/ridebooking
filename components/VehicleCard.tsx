@@ -11,7 +11,7 @@ interface Props {
   onSelect: (type: VehicleType) => void;
 }
 
-const vehicles = [
+export const vehicles = [
   {
     id: "four_wheeler",
     name: "Car",

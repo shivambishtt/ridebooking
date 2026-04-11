@@ -10,9 +10,39 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import getInitials from "@/lib/getInitials";
 import { Ride } from "./CaptainRides";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 function RideCard({ rides }: { rides: Ride[] }) {
-  const handleRideAccept = async () => {};
+  const router = useRouter();
+  const handleRideAccept = async (rideId: string) => {
+    try {
+      const response = await fetch(`/api/ride/${rideId}/accept`, {
+        method: "PATCH",
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        toast.error(data.message, {
+          position: "top-center",
+          style: {
+            background: "#D50419",
+          },
+        });
+      } else {
+        toast.success(data.message, {
+          position: "top-center",
+          style: {
+            background: "#418B24",
+          },
+        });
+        router.push(`/ride/${rideId}`);
+      }
+    } catch (error) {
+      console.log("ERROR:", error);
+      toast.error("Something went wrong");
+    }
+  };
 
   return (
     <div className="max-w-sm w-full relative">
@@ -32,7 +62,7 @@ function RideCard({ rides }: { rides: Ride[] }) {
                 <CardTitle className="text-lg font-semibold">
                   {ride.rider}
                 </CardTitle>
-                <span className="font-semibold text-primary">₹250</span>
+                <span className="font-semibold text-primary">₹{ride.fare}</span>
               </div>
             </CardHeader>
 
@@ -51,7 +81,7 @@ function RideCard({ rides }: { rides: Ride[] }) {
             <CardFooter>
               <div className="flex gap-2">
                 <Button
-                  onClick={handleRideAccept}
+                  onClick={() => handleRideAccept(ride.rideId)}
                   className="w-full bg-primary"
                 >
                   Accept

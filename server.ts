@@ -7,7 +7,7 @@ app.use(express.json());
 
 const server = http.createServer(app);
 
-const PORT = "5000";
+const PORT = 5000;
 
 export const io = new Server(server, {
   cors: {
@@ -19,8 +19,7 @@ io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
 
   socket.on("captain-online", ({ captainId }) => {
-    socket.join(captainId.toString());
-    console.log(`Captain ${captainId} joined room`);
+    if (captainId) socket.join(captainId.toString());
   });
 
   socket.on("disconnect", () => {
@@ -33,6 +32,14 @@ app.post("/emit-ride", (request, response) => {
   captainIds.forEach((captainId: string) => {
     io.to(captainId).emit("new-ride", ride);
   });
+  response.json({ success: true });
+});
+
+app.post("/ride-accepted", (request, response) => {
+  const { rideId, captainId } = request.body;
+  io.emit("ride-taken", { rideId });
+
+  io.to(captainId).emit("ride-confirmed", { rideId });
   response.json({ success: true });
 });
 

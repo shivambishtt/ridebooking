@@ -75,6 +75,14 @@ export async function PATCH(
       },
     });
 
+    await fetch(`${process.env.SOCKET_PORT}/ride-accepted`, {
+      method: "POST",
+      body: JSON.stringify({
+        rideId: ride._id.toString(),
+        captainId: captain._id.toString(),
+      }),
+    });
+
     return NextResponse.json(
       {
         message: "Ride accepted",

@@ -20,6 +20,7 @@ export type Ride = {
     coordinates: number[];
   };
   distance: number;
+  fare: number;
 };
 
 function CaptainRides() {
