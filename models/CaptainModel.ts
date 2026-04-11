@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from "bcrypt";
-import { VehicleType } from "./VehicleModel";
+import { VehicleType } from "@/lib/types";
 
 export interface ICaptain extends Document {
   name: string;

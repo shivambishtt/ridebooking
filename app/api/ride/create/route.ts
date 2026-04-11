@@ -8,7 +8,7 @@ import { Captain } from "@/models/CaptainModel";
 import { validCoordinates } from "@/lib/validCoordinates";
 import mongoose from "mongoose";
 import { calculateFare } from "@/lib/calculateFare";
-import { VehicleType } from "@/models/VehicleModel";
+import { VehicleType } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
   try {

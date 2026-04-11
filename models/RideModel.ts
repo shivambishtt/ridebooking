@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { VehicleType } from "./VehicleModel";
+import { VehicleType } from "@/lib/types";
 
 enum RideStatus {
   SEARCHING = "searching",

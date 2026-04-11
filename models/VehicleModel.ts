@@ -1,10 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-
-export enum VehicleType {
-  TWO_WHEELER = "two_wheeler",
-  THREE_WHEELER = "three_wheeler",
-  FOUR_WHEELER = "four_wheeler",
-}
+import { VehicleType } from "@/lib/types";
 
 interface IVehicle extends Document {
   captain: Schema.Types.ObjectId;

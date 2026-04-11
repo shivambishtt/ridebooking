@@ -1,4 +1,4 @@
-import { VehicleType } from "@/models/VehicleModel";
+import { VehicleType } from "./types";
 
 const BASE_FARE = 40;
 const FARE_PER_KM = 12;
