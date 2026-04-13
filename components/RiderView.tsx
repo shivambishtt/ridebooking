@@ -53,7 +53,7 @@ function RiderView() {
             </div>
 
             <div className="flex items-center justify-center">
-              <CardTitle className="text-md">Phone number</CardTitle>
+              <CardTitle className="text-md">📞 Phone number</CardTitle>
             </div>
 
             <CardDescription className="pt-4">
