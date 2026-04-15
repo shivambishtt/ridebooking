@@ -77,8 +77,12 @@ export async function PATCH(
 
     await fetch(`${process.env.SOCKET_PORT}/ride-accepted`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         rideId: ride._id.toString(),
+        riderId: ride.rider._id.toString(),
         captainId: captain._id.toString(),
       }),
     });

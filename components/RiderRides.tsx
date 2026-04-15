@@ -13,11 +13,12 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import VehicleCard from "./VehicleCard";
 import { useRouter } from "next/navigation";
+import { VehicleType } from "@/lib/types";
 
 function RiderRides() {
   const session = useSession();
   const router = useRouter();
-  const [vehicle, setVehicle] = useState("two_wheeler");
+  const [vehicle, setVehicle] = useState<VehicleType | null>(null);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [fromAuto, setFromAuto] =

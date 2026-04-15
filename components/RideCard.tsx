@@ -12,6 +12,8 @@ import getInitials from "@/lib/getInitials";
 import { Ride } from "./CaptainRides";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import socket from "@/lib/socket";
 
 function RideCard({ rides }: { rides: Ride[] }) {
   const router = useRouter();
@@ -36,13 +38,22 @@ function RideCard({ rides }: { rides: Ride[] }) {
             background: "#418B24",
           },
         });
-        router.push(`/ride/${rideId}`);
       }
     } catch (error) {
       console.log("ERROR:", error);
       toast.error("Something went wrong");
     }
   };
+
+  useEffect(() => {
+    socket.on("ride-accepted", ({ rideId }) => {
+      console.log(rideId);
+      router.push(`/ride/${rideId}`);
+    });
+    return () => {
+      socket.off("ride-accepted");
+    };
+  });
 
   return (
     <div className="max-w-sm w-full relative">

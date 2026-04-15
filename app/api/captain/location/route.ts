@@ -53,7 +53,6 @@ export async function GET() {
   try {
     await connectDB();
     const session = await getServerSession(authOptions);
-
     if (!session || session.user.role !== "captain") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
@@ -61,6 +60,13 @@ export async function GET() {
     const captain = await Captain.findById(session.user.id).select(
       "isAvailable",
     );
+
+    if (!captain) {
+      return NextResponse.json(
+        { message: "Captain not found" },
+        { status: 404 },
+      );
+    }
     return NextResponse.json({ isAvailable: captain.isAvailable });
   } catch (error) {
     return NextResponse.json(

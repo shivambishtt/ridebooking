@@ -7,7 +7,7 @@ import ElectricRickshawIcon from "@mui/icons-material/ElectricRickshaw";
 import { VehicleType } from "@/lib/types";
 
 interface Props {
-  selected: string;
+  selected: VehicleType | null;
   onSelect: (type: VehicleType) => void;
 }
 

@@ -29,20 +29,24 @@ function CaptainRides() {
   const [rides, setRides] = useState<Ride[]>([]);
 
   useEffect(() => {
-    const fetchStatus = async () => {
-      const response = await fetch("/api/captain/location");
-      const data = await response.json();
-      if (response.ok) {
-        setIsAvailable(data.isAvailable);
-      }
-    };
-    fetchStatus();
+    try {
+      const fetchStatus = async () => {
+        const response = await fetch("/api/captain/location");
+        const data = await response.json();
+        if (response.ok) {
+          setIsAvailable(data?.isAvailable);
+        }
+      };
+      fetchStatus();
+    } catch (error) {
+      console.log("Error occured in switching status", error);
+    }
   }, []);
 
   useEffect(() => {
     socket.on("connect", () => {
       if (isAvailable && session.data?.user.id) {
-        socket.emit("captain-online", session.data.user.id);
+        socket.emit("captain-online", { captainId: session.data.user.id });
       }
     });
     socket.on("new-ride", (ride: Ride) => {
@@ -76,7 +80,7 @@ function CaptainRides() {
         style: { background: "#D50419" },
       });
     } else {
-      setIsAvailable(data.captain.isAvailable);
+      setIsAvailable(data.captain?.isAvailable);
       const captainId = data.captain._id || session.data?.user?.id;
 
       if (updatedStatus) {

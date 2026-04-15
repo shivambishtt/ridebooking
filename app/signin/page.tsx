@@ -54,8 +54,9 @@ export default function SigninForm() {
     if (response?.ok) {
       if (session.data?.user.role === "captain") {
         router.push("/vehicle");
+      } else {
+        router.push("/");
       }
-      router.push("/");
     }
     if (response?.error) {
       toast.error(response.error, {
