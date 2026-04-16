@@ -7,6 +7,7 @@ export interface ICaptain extends Document {
   email: string;
   password?: string;
   phoneNumber: string;
+  vehicle: Schema.Types.ObjectId;
   vehicleType: VehicleType;
   provider: "credentials" | "google" | "github";
   rating: number;
@@ -38,9 +39,11 @@ const captainSchema = new Schema<ICaptain>(
       required: [true, "Password is required"],
     },
 
-    vehicleType: {
-      type: String,
-      enum: Object.values(VehicleType),
+    vehicle: {
+      type: Schema.Types.ObjectId,
+      ref: "Vehicle",
+      required: true,
+      unique: true,
     },
 
     phoneNumber: {

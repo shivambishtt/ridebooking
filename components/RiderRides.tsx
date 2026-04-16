@@ -54,18 +54,20 @@ function RiderRides() {
       }),
     });
     const data = await response.json();
-    if (!response.ok) {
-      toast.error(data.message, {
-        position: "top-center",
-        style: {
-          background: "#D50419",
-        },
-      });
-    } else {
+    const rideId = data?.ride?._id;
+    if (response.ok) {
       toast.success(data.message, {
         position: "top-center",
         style: {
           background: "#418B24",
+        },
+      });
+      router.push(`/ride/${rideId}`);
+    } else {
+      toast.error(data.message, {
+        position: "top-center",
+        style: {
+          background: "#D50419",
         },
       });
     }

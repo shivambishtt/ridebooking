@@ -19,7 +19,6 @@ io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
 
   socket.on("captain-online", ({ captainId }) => {
-    console.log("All rooms:", io.sockets.adapter.rooms);
     if (captainId) socket.join(captainId.toString());
   });
 
@@ -37,16 +36,8 @@ app.post("/emit-ride", (request, response) => {
 });
 
 app.post("/ride-accepted", (request, response) => {
-  console.log("request made");
-  console.log(request.body);
-
   const { rideId, captainId, riderId } = request.body;
 
-  if (!rideId || !captainId || !riderId) {
-    console.log("missing");
-  } else {
-    console.log("Hello");
-  }
   io.emit("ride-taken", { rideId });
   io.to(captainId).emit("ride-confirmed", { rideId });
   io.to(captainId).emit("ride-acce-ted", { rideId });

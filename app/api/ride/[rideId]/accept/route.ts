@@ -103,6 +103,18 @@ export async function PATCH(
           name: ride.rider.name,
           phone: ride.rider.phoneNumber,
         },
+        captain: {
+          _id: captain._id,
+          name: captain.name,
+          phoneNumber: captain.phoneNumber,
+          rating: captain.rating,
+        },
+        vehicle: {
+          vehicleType: captain.vehicleType,
+          vehicleNumber: captain.vehicleNumber,
+          vehicleBrand: captain.vehicleBrand,
+          vehicleModel: captain.vehicleModel,
+        },
       },
       { status: 200 },
     );
