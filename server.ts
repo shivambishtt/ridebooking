@@ -18,8 +18,14 @@ export const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
 
+  socket.on("join", ({ userId }) => {
+    socket.join(userId.toString());
+    console.log("User joined room:", userId);
+  });
+
   socket.on("captain-online", ({ captainId }) => {
     if (captainId) socket.join(captainId.toString());
+    console.log("Captain joined the room", captainId);
   });
 
   socket.on("disconnect", () => {
@@ -40,7 +46,7 @@ app.post("/ride-accepted", (request, response) => {
 
   io.emit("ride-taken", { rideId });
   io.to(captainId).emit("ride-confirmed", { rideId });
-  io.to(captainId).emit("ride-acce-ted", { rideId });
+  io.to(captainId).emit("ride-accepted", { rideId });
   io.to(riderId).emit("ride-accepted", { rideId });
   response.json({ success: true });
 });

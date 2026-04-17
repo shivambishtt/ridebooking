@@ -42,8 +42,6 @@ const captainSchema = new Schema<ICaptain>(
     vehicle: {
       type: Schema.Types.ObjectId,
       ref: "Vehicle",
-      required: true,
-      unique: true,
     },
 
     phoneNumber: {

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useLoadScript } from "@react-google-maps/api";
 import { Autocomplete } from "@react-google-maps/api";
@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import VehicleCard from "./VehicleCard";
 import { useRouter } from "next/navigation";
 import { VehicleType } from "@/lib/types";
+import socket from "@/lib/socket";
 
 function RiderRides() {
   const session = useSession();
@@ -30,6 +31,16 @@ function RiderRides() {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY!,
     libraries: ["places"],
   });
+
+  useEffect(() => {
+    if (session?.data?.user?.id) {
+      socket.emit("join", { userId: session.data.user.id });
+    }
+    return () => {
+      socket.off("join");
+    };
+  }, [session]);
+
   if (!isLoaded) {
     return <p>Loading...</p>;
   }

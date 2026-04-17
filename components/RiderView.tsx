@@ -10,10 +10,57 @@ import Image from "next/image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "./ui/separator";
 import getInitials from "@/lib/getInitials";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { toast } from "sonner";
+
+interface Ride {
+  captain: {
+    name: string;
+    phoneNumber: string;
+    rating: number;
+    vehicle?: {
+      vehicleNumber: string;
+      vehicleModel: string;
+      vehicleBrand: string;
+      vehicleColor: string;
+      vehicleType: string;
+    };
+  };
+}
 
 function RiderView() {
+  const { rideId } = useParams();
+  const [ride, setRide] = useState<Ride | null>(null);
+
+  useEffect(() => {
+    const getRideDetails = async () => {
+      const response = await fetch(`/api/ride/${rideId}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        setRide(data.ride);
+        toast.success(data.message, {
+          position: "top-center",
+          style: { background: "#418B24" },
+        });
+      } else {
+        toast.error(data.message, {
+          position: "top-center",
+          style: { background: "#D50419" },
+        });
+      }
+    };
+    if (rideId) getRideDetails();
+  }, [rideId]);
+
+  if (!ride) return <p>Loading...</p>;
+
+  const { captain } = ride;
+  const { vehicle } = captain;
+
   return (
-    <div className="p-10 min-h-screen ">
+    <div className="p-10 min-h-screen">
       <div>
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold">
           <span className="text-primary">Captain</span> Details
@@ -21,7 +68,7 @@ function RiderView() {
       </div>
       <div>
         <Card className="relative mx-auto w-full max-w-sm pt-0">
-          <div className="absolute inset-0  z-30 aspect-video bg-black/35" />
+          <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
           <Image
             width={20}
             height={30}
@@ -39,35 +86,42 @@ function RiderView() {
 
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4 text-nowrap">
-                <CardTitle className="text-xl">Shivam Bisht</CardTitle>
-                <CardTitle className="text-md">⭐4.5</CardTitle>
+                <CardTitle>{captain?.name}</CardTitle>
+                <CardTitle className="text-md">⭐ {captain?.rating}</CardTitle>
               </div>
 
               <span>
                 <Avatar>
                   <AvatarFallback className="bg-red-500 text-white">
-                    {getInitials("Shivam Bisht")}
+                    {getInitials(captain?.name ?? "")}
                   </AvatarFallback>
                 </Avatar>
               </span>
             </div>
 
             <div className="flex items-center justify-center">
-              <CardTitle className="text-md">📞 Phone number</CardTitle>
+              <CardTitle className="text-md">
+                📞 {captain?.phoneNumber}
+              </CardTitle>
             </div>
 
             <CardDescription className="pt-4">
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="font-semibold text-md">
-                    DL 9SCU 4091
+                    {vehicle?.vehicleNumber}
                   </CardTitle>
                   <CardTitle className="font-semibold text-md">
-                    Bajaj Pulsar N160
+                    {vehicle?.vehicleBrand} {vehicle?.vehicleModel}
+                  </CardTitle>
+                  <CardTitle className="font-semibold text-md">
+                    {vehicle?.vehicleColor}
                   </CardTitle>
                 </div>
                 <div>
-                  <CardTitle>Capacity:2</CardTitle>
+                  <CardTitle>
+                    Capacity: {vehicle?.vehicleType === "two_wheeler" ? 2 : 4}
+                  </CardTitle>
                 </div>
               </div>
             </CardDescription>

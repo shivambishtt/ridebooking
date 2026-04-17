@@ -47,7 +47,6 @@ function RideCard({ rides }: { rides: Ride[] }) {
 
   useEffect(() => {
     socket.on("ride-accepted", ({ rideId }) => {
-      console.log(rideId);
       router.push(`/ride/${rideId}`);
     });
     return () => {
