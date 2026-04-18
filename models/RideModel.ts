@@ -103,7 +103,8 @@ rideSchema.pre("save", async function () {
 
   const validTransitions: Record<string, string[]> = {
     searching: ["accepted", "timeout", "cancelled"],
-    accepted: ["ongoing", "cancelled"],
+    arrived: ["ongoing", "cancelled"],
+    accepted: ["arrived", "cancelled"],
     ongoing: ["completed", "cancelled"],
     completed: [],
     cancelled: [],

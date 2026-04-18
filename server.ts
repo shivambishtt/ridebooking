@@ -28,6 +28,11 @@ io.on("connection", (socket) => {
     console.log("Captain joined the room", captainId);
   });
 
+  socket.on("captain-arrived", ({ captainId, riderId }) => {
+    console.log("Captain arrived", captainId);
+    io.to(riderId).emit("captain-arrived", captainId);
+  });
+
   socket.on("disconnect", () => {
     console.log("Client disconnected:", socket.id);
   });

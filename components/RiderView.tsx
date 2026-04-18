@@ -13,9 +13,11 @@ import getInitials from "@/lib/getInitials";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
+import socket from "@/lib/socket";
 
 interface Ride {
   captain: {
+    _id: string;
     name: string;
     phoneNumber: string;
     rating: number;
@@ -54,6 +56,18 @@ function RiderView() {
     if (rideId) getRideDetails();
   }, [rideId]);
 
+  useEffect(() => {
+    const handler = ({ captainId }: { captainId: string }) => {
+      console.log("Captain arrived", captainId);
+    };
+
+    socket.on("captain-arrived", handler);
+
+    return () => {
+      socket.off("captain-arrived", handler);
+    };
+  }, []);
+
   if (!ride) return <p>Loading...</p>;
 
   const { captain } = ride;
@@ -86,8 +100,7 @@ function RiderView() {
 
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4 text-nowrap">
-                <CardTitle>{captain?.name}</CardTitle>
-                <CardTitle className="text-md">⭐ {captain?.rating}</CardTitle>
+                <CardTitle className="text-xl">{captain?.name}</CardTitle>
               </div>
 
               <span>
@@ -114,11 +127,11 @@ function RiderView() {
                   <CardTitle className="font-semibold text-md">
                     {vehicle?.vehicleBrand} {vehicle?.vehicleModel}
                   </CardTitle>
+                </div>
+                <div>
                   <CardTitle className="font-semibold text-md">
                     {vehicle?.vehicleColor}
                   </CardTitle>
-                </div>
-                <div>
                   <CardTitle>
                     Capacity: {vehicle?.vehicleType === "two_wheeler" ? 2 : 4}
                   </CardTitle>

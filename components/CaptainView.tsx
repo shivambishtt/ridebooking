@@ -14,11 +14,15 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
+import socket from "@/lib/socket";
+import { useSession } from "next-auth/react";
 
 interface Ride {
   rider: {
+    _id: string;
     name: string;
     phoneNumber: string;
+    rating: number;
   };
   pickupLocation: {
     address: string;
@@ -32,6 +36,7 @@ interface Ride {
 }
 
 function CaptainView() {
+  const session = useSession();
   const { rideId } = useParams();
   const [ride, setRide] = useState<Ride | null>(null);
 
@@ -60,6 +65,62 @@ function CaptainView() {
 
   const { rider, pickupLocation, dropLocation, distance, fare } = ride;
 
+  const handleCaptainArrived = async () => {
+    const response = await fetch(`/api/ride/${rideId}/arrived`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        rideId,
+      }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      toast.success(data.message, {
+        position: "top-center",
+        style: {
+          background: "#418B24",
+        },
+      });
+
+      socket.emit("captain-arrived", {
+        captainId: session.data?.user.id,
+        riderId: ride.rider._id,
+      });
+    } else {
+      toast.error(data.message, {
+        position: "top-center",
+        style: {
+          background: "#D50419",
+        },
+      });
+    }
+  };
+
+  const handleStartRide = async () => {
+    const response = await fetch(`/api/ride/${rideId}/start`, {
+      method: "PATCH",
+    });
+    const data = await response.json();
+    if (response.ok) {
+      toast.success(data.message, {
+        position: "top-center",
+        style: {
+          background: "#418B24",
+        },
+      });
+    } else {
+      toast.error(data.message, {
+        position: "top-center",
+        style: {
+          background: "#D50419",
+        },
+      });
+    }
+  };
+
   return (
     <div className="p-10 min-h-screen">
       <div>
@@ -71,7 +132,6 @@ function CaptainView() {
       <div>
         <Card className="relative mx-auto w-full max-w-sm pt-0">
           <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
-
           <div className="relative z-20 aspect-video w-full bg-black flex items-center justify-center text-white">
             Map View
           </div>
@@ -140,9 +200,23 @@ function CaptainView() {
           </CardHeader>
 
           <CardFooter className="flex justify-between">
-            <Button className="hover:cursor-pointer w-full bg-primary text-black">
-              Arrived
-            </Button>
+            {ride.status === "accepted" && (
+              <Button
+                onClick={handleCaptainArrived}
+                className="hover:cursor-pointer w-full bg-primary text-black"
+              >
+                Arrived
+              </Button>
+            )}
+
+            {ride.status === "arrived" && (
+              <Button
+                onClick={handleStartRide}
+                className="hover:cursor-pointer w-full bg-primary text-black"
+              >
+                Start Ride
+              </Button>
+            )}
           </CardFooter>
         </Card>
       </div>
