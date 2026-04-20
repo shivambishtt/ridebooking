@@ -36,7 +36,7 @@ export async function GET(
     }
 
     return NextResponse.json(
-      { message: "Ride ID fetched successfully", ride },
+      { message: "Ride details fetched successfully", ride },
       { status: 201 },
     );
   } catch (error) {

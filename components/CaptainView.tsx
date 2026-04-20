@@ -63,7 +63,7 @@ function CaptainView() {
 
   if (!ride) return <p>Loading...</p>;
 
-  const { rider, pickupLocation, dropLocation, distance, fare } = ride;
+  const { rider, pickupLocation, dropLocation, distance, fare, status } = ride;
 
   const handleCaptainArrived = async () => {
     const response = await fetch(`/api/ride/${rideId}/arrived`, {
@@ -77,26 +77,20 @@ function CaptainView() {
     });
 
     const data = await response.json();
-    if (response.ok) {
-      toast.success(data.message, {
-        position: "top-center",
-        style: {
-          background: "#418B24",
-        },
-      });
-
-      socket.emit("captain-arrived", {
-        captainId: session.data?.user.id,
-        riderId: ride.rider._id,
-      });
-    } else {
+    if (!response.ok) {
       toast.error(data.message, {
         position: "top-center",
         style: {
           background: "#D50419",
         },
       });
+    } else {
+      socket.emit("captain-arrived", {
+        captainId: session.data?.user.id,
+        riderId: ride.rider._id,
+      });
     }
+    setRide((prev) => (prev ? { ...prev, status: "arrived" } : prev));
   };
 
   const handleStartRide = async () => {
@@ -104,21 +98,20 @@ function CaptainView() {
       method: "PATCH",
     });
     const data = await response.json();
-    if (response.ok) {
-      toast.success(data.message, {
-        position: "top-center",
-        style: {
-          background: "#418B24",
-        },
-      });
-    } else {
+    if (!response.ok) {
       toast.error(data.message, {
         position: "top-center",
         style: {
           background: "#D50419",
         },
       });
+    } else {
+      socket.emit("ride-started", {
+        captainId: session.data?.user.id,
+        riderId: ride.rider._id,
+      });
     }
+    setRide((prev) => (prev ? { ...prev, status: "ongoing" } : prev));
   };
 
   return (
@@ -138,9 +131,14 @@ function CaptainView() {
 
           <CardHeader>
             <span className="flex items-center justify-center">
-              <h1 className="text-md font-semibold">
-                Going to pickup • {distance}km away
-              </h1>
+              {ride.status === "accepted" && (
+                <h1 className="text-md font-semibold">
+                  Going to pickup • {distance}km away
+                </h1>
+              )}
+              {ride.status === "arrived" && (
+                <h1 className="text-md font-semibold">Waiting for Rider</h1>
+              )}
             </span>
 
             <Separator />
@@ -200,7 +198,7 @@ function CaptainView() {
           </CardHeader>
 
           <CardFooter className="flex justify-between">
-            {ride.status === "accepted" && (
+            {status === "accepted" && (
               <Button
                 onClick={handleCaptainArrived}
                 className="hover:cursor-pointer w-full bg-primary text-black"
@@ -209,7 +207,7 @@ function CaptainView() {
               </Button>
             )}
 
-            {ride.status === "arrived" && (
+            {status === "arrived" && (
               <Button
                 onClick={handleStartRide}
                 className="hover:cursor-pointer w-full bg-primary text-black"

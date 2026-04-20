@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import socket from "@/lib/socket";
 
 interface Ride {
+  status: string;
   captain: {
     _id: string;
     name: string;
@@ -59,12 +60,27 @@ function RiderView() {
   useEffect(() => {
     const handler = ({ captainId }: { captainId: string }) => {
       console.log("Captain arrived", captainId);
+      setRide((prev) => (prev ? { ...prev, status: "arrived" } : prev));
+      toast.success("Captain arrived at your location", {
+        position: "top-center",
+        style: { background: "#418B24" },
+      });
     };
 
+    const startHandler = ({ captainId }: { captainId: string }) => {
+      console.log("Ride started by Captain", captainId);
+      setRide((prev) => (prev ? { ...prev, status: "ongoing" } : prev));
+      toast.success("Ride started by Captain", {
+        position: "top-center",
+        style: { background: "#418B24" },
+      });
+    };
     socket.on("captain-arrived", handler);
+    socket.on("ride-started", startHandler);
 
     return () => {
       socket.off("captain-arrived", handler);
+      socket.off("ride-started", startHandler);
     };
   }, []);
 
@@ -92,9 +108,17 @@ function RiderView() {
           />
           <CardHeader>
             <span className="flex items-center justify-center">
-              <h1 className="text-md font-semibold">
-                Captain is on the way 300m
-              </h1>
+              {ride.status === "accepted" && (
+                <h1 className="text-md font-semibold">Captain is on the way</h1>
+              )}
+              {ride.status === "arrived" && (
+                <h1 className="text-md font-semibold">
+                  Captain arrived at your location
+                </h1>
+              )}
+              {ride.status === "ongoing" && (
+                <h1 className="text-md font-semibold">Have a safe Ride</h1>
+              )}
             </span>
             <Separator />
 

@@ -36,7 +36,7 @@ export async function PATCH(
       {
         _id: rideId,
         captain: session.user.id,
-        status: "accepted",
+        status: "arrived",
       },
       {
         $set: { status: "ongoing" },
