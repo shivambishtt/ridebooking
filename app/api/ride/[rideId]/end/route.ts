@@ -40,18 +40,17 @@ export async function PATCH(
       { new: true },
     );
 
-    const fare = calculateFare(ride.distance);
-
     if (!ride) {
       return NextResponse.json(
         { message: "Ride not found or not ongoing" },
         { status: 404 },
       );
     }
-
     await Captain.findByIdAndUpdate(session.user.id, {
       isAvailable: true,
     });
+
+    const fare = calculateFare(ride.distance, ride.vehicleType);
 
     return NextResponse.json(
       {

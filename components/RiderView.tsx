@@ -17,6 +17,7 @@ import socket from "@/lib/socket";
 
 interface Ride {
   status: string;
+  fare: number;
   captain: {
     _id: string;
     name: string;
@@ -75,18 +76,30 @@ function RiderView() {
         style: { background: "#418B24" },
       });
     };
+
+    const endHandler = ({ captainId }: { captainId: string }) => {
+      console.log("Reached at destination", captainId);
+      setRide((prev) => (prev ? { ...prev, status: "completed" } : prev));
+      toast.success("Ride Completed succesfully", {
+        position: "top-center",
+        style: { background: "#418B24" },
+      });
+    };
+
     socket.on("captain-arrived", handler);
     socket.on("ride-started", startHandler);
+    socket.on("ride-completed", endHandler);
 
     return () => {
       socket.off("captain-arrived", handler);
       socket.off("ride-started", startHandler);
+      socket.off("ride-completed", endHandler);
     };
   }, []);
 
   if (!ride) return <p>Loading...</p>;
 
-  const { captain } = ride;
+  const { captain, fare } = ride;
   const { vehicle } = captain;
 
   return (
@@ -117,7 +130,12 @@ function RiderView() {
                 </h1>
               )}
               {ride.status === "ongoing" && (
-                <h1 className="text-md font-semibold">Have a safe Ride</h1>
+                <h1 className="text-md font-semibold">
+                  Heading towards destination
+                </h1>
+              )}
+              {ride.status === "completed" && (
+                <h1 className="text-md font-semibold">Ride Completed</h1>
               )}
             </span>
             <Separator />
@@ -163,7 +181,13 @@ function RiderView() {
               </div>
             </CardDescription>
           </CardHeader>
-          <CardFooter></CardFooter>
+          <CardFooter className="flex items-center justify-center">
+            {ride.status === "completed" && (
+              <CardTitle className="text-md">
+                Please pay ₹{fare} to Captain
+              </CardTitle>
+            )}
+          </CardFooter>
         </Card>
       </div>
     </div>

@@ -114,6 +114,27 @@ function CaptainView() {
     setRide((prev) => (prev ? { ...prev, status: "ongoing" } : prev));
   };
 
+  const handleRideCompleted = async () => {
+    const response = await fetch(`/api/ride/${rideId}/end`, {
+      method: "PATCH",
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      toast.error(data.message, {
+        position: "top-center",
+        style: {
+          background: "#D50419",
+        },
+      });
+    } else {
+      socket.emit("ride-completed", {
+        captainId: session.data?.user.id,
+        riderId: ride.rider._id,
+      });
+      setRide((prev) => (prev ? { ...prev, status: "completed" } : prev));
+    }
+  };
+
   return (
     <div className="p-10 min-h-screen">
       <div>
@@ -138,6 +159,14 @@ function CaptainView() {
               )}
               {ride.status === "arrived" && (
                 <h1 className="text-md font-semibold">Waiting for Rider</h1>
+              )}
+              {ride.status === "ongoing" && (
+                <h1 className="text-md font-semibold">Trip Ongoing</h1>
+              )}
+              {ride.status === "completed" && (
+                <h1 className="text-md font-semibold">
+                  Collect fare from rider
+                </h1>
               )}
             </span>
 
@@ -214,6 +243,18 @@ function CaptainView() {
               >
                 Start Ride
               </Button>
+            )}
+
+            {status === "ongoing" && (
+              <Button
+                onClick={handleRideCompleted}
+                className="hover:cursor-pointer w-full bg-primary text-black"
+              >
+                Finish Ride
+              </Button>
+            )}
+            {status === "completed" && (
+              <h1>Payment collection logic goes here</h1>
             )}
           </CardFooter>
         </Card>
