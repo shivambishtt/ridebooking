@@ -11,6 +11,7 @@ import socket from "@/lib/socket";
 export type Ride = {
   rideId: string;
   rider: string;
+  otp: string;
   pickupLocation: {
     address: string;
     coordinates: number[];

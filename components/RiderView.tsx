@@ -18,6 +18,7 @@ import socket from "@/lib/socket";
 interface Ride {
   status: string;
   fare: number;
+  otp: string;
   captain: {
     _id: string;
     name: string;
@@ -99,7 +100,7 @@ function RiderView() {
 
   if (!ride) return <p>Loading...</p>;
 
-  const { captain, fare } = ride;
+  const { captain, fare, otp } = ride;
   const { vehicle } = captain;
 
   return (
@@ -185,6 +186,11 @@ function RiderView() {
             {ride.status === "completed" && (
               <CardTitle className="text-md">
                 Please pay ₹{fare} to Captain
+              </CardTitle>
+            )}
+            {ride.status === "accepted" && (
+              <CardTitle className="text-md">
+                Please share{otp} with captain
               </CardTitle>
             )}
           </CardFooter>

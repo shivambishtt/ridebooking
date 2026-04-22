@@ -23,6 +23,7 @@ interface IRide extends Document {
     coordinates: number[];
   };
   status: RideStatus;
+  otp: string;
   fare: number;
   distance: number;
   vehicleType: VehicleType;
@@ -84,6 +85,9 @@ const rideSchema = new Schema<IRide>(
       enum: Object.values(RideStatus),
       default: RideStatus.SEARCHING,
       required: true,
+    },
+    otp: {
+      type: String,
     },
     payment: {
       type: Schema.Types.ObjectId,

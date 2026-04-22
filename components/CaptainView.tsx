@@ -39,6 +39,7 @@ function CaptainView() {
   const session = useSession();
   const { rideId } = useParams();
   const [ride, setRide] = useState<Ride | null>(null);
+  const [otpOpen, setOtpOpen] = useState(false);
 
   useEffect(() => {
     const getRideDetails = async () => {
@@ -94,6 +95,7 @@ function CaptainView() {
   };
 
   const handleStartRide = async () => {
+    setOtpOpen(true);
     const response = await fetch(`/api/ride/${rideId}/start`, {
       method: "PATCH",
     });
@@ -165,7 +167,7 @@ function CaptainView() {
               )}
               {ride.status === "completed" && (
                 <h1 className="text-md font-semibold">
-                  Collect fare from rider
+                  Collect ₹{fare} from rider
                 </h1>
               )}
             </span>

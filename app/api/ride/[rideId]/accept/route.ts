@@ -4,6 +4,7 @@ import { Ride } from "@/models/RideModel";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../auth/[...nextauth]/route";
 import { Captain } from "@/models/CaptainModel";
+import generateOTP from "@/lib/generateOtp";
 
 export async function PATCH(
   req: NextRequest,
@@ -49,6 +50,7 @@ export async function PATCH(
         { status: 409 },
       );
     }
+    const otp = generateOTP();
 
     const ride = await Ride.findOneAndUpdate(
       {
@@ -56,7 +58,13 @@ export async function PATCH(
         status: "searching",
         availableCaptains: { $in: [captain._id] },
       },
-      { $set: { status: "accepted", captain: captain._id } },
+      {
+        $set: {
+          status: "accepted",
+          captain: captain._id,
+          otp: otp,
+        },
+      },
       { new: true },
     ).populate("rider", "name phoneNumber");
 
@@ -102,6 +110,7 @@ export async function PATCH(
         rider: {
           name: ride.rider.name,
           phone: ride.rider.phoneNumber,
+          otp: ride.otp,
         },
         captain: {
           _id: captain._id,
