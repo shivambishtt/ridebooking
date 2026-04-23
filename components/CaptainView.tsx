@@ -16,6 +16,7 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import socket from "@/lib/socket";
 import { useSession } from "next-auth/react";
+import { Input } from "./ui/input";
 
 interface Ride {
   rider: {
@@ -40,6 +41,7 @@ function CaptainView() {
   const { rideId } = useParams();
   const [ride, setRide] = useState<Ride | null>(null);
   const [otpOpen, setOtpOpen] = useState(false);
+  const [otp, setOtp] = useState("");
 
   useEffect(() => {
     const getRideDetails = async () => {
@@ -94,10 +96,35 @@ function CaptainView() {
     setRide((prev) => (prev ? { ...prev, status: "arrived" } : prev));
   };
 
-  const handleStartRide = async () => {
+  const handleOpenOtp = () => {
     setOtpOpen(true);
+  };
+
+  const handleStartRide = async (otp: string) => {
+    if (!otp) {
+      toast.error("OTP is required", {
+        position: "top-center",
+        style: {
+          background: "#D50419",
+        },
+      });
+      return;
+    }
+
+    if (otp.length !== 4) {
+      toast.error("Invalid OTP", {
+        position: "top-center",
+        style: {
+          background: "#D50419",
+        },
+      });
+      return;
+    }
     const response = await fetch(`/api/ride/${rideId}/start`, {
       method: "PATCH",
+      body: JSON.stringify({
+        otp,
+      }),
     });
     const data = await response.json();
     if (!response.ok) {
@@ -107,12 +134,14 @@ function CaptainView() {
           background: "#D50419",
         },
       });
+      return;
     } else {
       socket.emit("ride-started", {
         captainId: session.data?.user.id,
         riderId: ride.rider._id,
       });
     }
+    setOtpOpen(false);
     setRide((prev) => (prev ? { ...prev, status: "ongoing" } : prev));
   };
 
@@ -238,13 +267,31 @@ function CaptainView() {
               </Button>
             )}
 
-            {status === "arrived" && (
+            {status === "arrived" && !otpOpen && (
               <Button
-                onClick={handleStartRide}
-                className="hover:cursor-pointer w-full bg-primary text-black"
+                onClick={handleOpenOtp}
+                className="w-full bg-primary text-black"
               >
                 Start Ride
               </Button>
+            )}
+
+            {status === "arrived" && otpOpen && (
+              <div className="flex flex-col gap-2 w-full">
+                <Input
+                  type="number"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="Enter 4-digit OTP"
+                  maxLength={4}
+                />
+                <Button
+                  onClick={() => handleStartRide(otp)}
+                  className="w-full bg-primary text-black"
+                >
+                  Verify & Start Ride
+                </Button>
+              </div>
             )}
 
             {status === "ongoing" && (

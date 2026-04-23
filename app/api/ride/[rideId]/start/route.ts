@@ -32,17 +32,21 @@ export async function PATCH(
     if (!mongoose.Types.ObjectId.isValid(rideId)) {
       return NextResponse.json({ message: "Invalid Ride ID" }, { status: 400 });
     }
-    const ride = await Ride.findOneAndUpdate(
-      {
-        _id: rideId,
-        captain: session.user.id,
-        status: "arrived",
-      },
-      {
-        $set: { status: "ongoing" },
-      },
-      { new: true },
-    );
+
+    const { otp } = await req.json();
+
+    if (!otp) {
+      return NextResponse.json(
+        { message: "OTP not provided" },
+        { status: 409 },
+      );
+    }
+
+    const ride = await Ride.findOne({
+      _id: rideId,
+      captain: session.user.id,
+      status: "arrived",
+    });
 
     if (!ride) {
       return NextResponse.json(
@@ -51,14 +55,32 @@ export async function PATCH(
       );
     }
 
+    if (ride.otp !== otp) {
+      return NextResponse.json(
+        { message: "Incorrect OTP. Please enter again" },
+        { status: 404 },
+      );
+    }
+
+    const updatedRide = await Ride.findOneAndUpdate(
+      { _id: rideId, captain: session.user.id, status: "arrived" },
+      {
+        $set: {
+          status: "ongoing",
+          otp: null,
+        },
+      },
+      { new: true },
+    );
+
     return NextResponse.json(
       {
         message: "Ride started by the captain",
         ride: {
-          _id: ride._id,
-          status: ride.status,
-          pickupLocation: ride.pickupLocation,
-          dropLocation: ride.dropLocation,
+          _id: updatedRide._id,
+          status: updatedRide.status,
+          pickupLocation: updatedRide.pickupLocation,
+          dropLocation: updatedRide.dropLocation,
         },
       },
       { status: 200 },

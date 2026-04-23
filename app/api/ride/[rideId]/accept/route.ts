@@ -52,6 +52,12 @@ export async function PATCH(
     }
     const otp = generateOTP();
 
+    if (!otp) {
+      return NextResponse.json(
+        { message: "Error occured while generating the OTP" },
+        { status: 409 },
+      );
+    }
     const ride = await Ride.findOneAndUpdate(
       {
         _id: rideId,

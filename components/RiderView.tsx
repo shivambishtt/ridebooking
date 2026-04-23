@@ -188,9 +188,9 @@ function RiderView() {
                 Please pay ₹{fare} to Captain
               </CardTitle>
             )}
-            {ride.status === "accepted" && (
+            {["accepted", "arrived"].includes(ride.status) && (
               <CardTitle className="text-md">
-                Please share{otp} with captain
+                OTP - <span className="text-primary">{otp}</span>
               </CardTitle>
             )}
           </CardFooter>
