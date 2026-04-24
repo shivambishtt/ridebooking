@@ -5,6 +5,7 @@ enum PaymentStatus {
   PENDING = "pending",
   SUCCESS = "success",
   FAILED = "failed",
+  TIMEOUT = "timeout",
 }
 enum PaymentMode {
   UPI = "UPI",
