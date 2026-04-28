@@ -23,7 +23,7 @@ export const vehicles = [
     id: "two_wheeler",
     name: "Bike",
     icon: <TwoWheelerIcon />,
-    capacity: 1,
+    capacity: 2,
     desc: "Quick & low-cost rides",
   },
   {

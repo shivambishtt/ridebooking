@@ -138,9 +138,11 @@ function RiderRides() {
         </div>
 
         <VehicleCard selected={vehicle} onSelect={(type) => setVehicle(type)} />
-        <Button className="" onClick={handleCreateRide}>
-          Request Ride
-        </Button>
+        <div className="flex items-center justify-center mt-5">
+          <Button className="" onClick={handleCreateRide}>
+            Request Ride
+          </Button>
+        </div>
       </div>
     </div>
   );
