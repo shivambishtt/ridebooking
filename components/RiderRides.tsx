@@ -33,13 +33,18 @@ function RiderRides() {
   });
 
   useEffect(() => {
-    if (session?.data?.user?.id) {
-      socket.emit("join", { userId: session.data.user.id });
-    }
+    const userId = session?.data?.user.id;
+    if (!userId) return;
+
+    socket.emit("join", { userId });
+    socket.on("ride-accepted", ({ rideId }) => {
+      router.push(`/ride/${rideId}`);
+    });
+
     return () => {
-      socket.off("join");
+      socket.off("ride-accepted");
     };
-  }, [session]);
+  }, [session.data?.user.id]);
 
   if (!isLoaded) {
     return <p>Loading...</p>;
@@ -65,7 +70,6 @@ function RiderRides() {
       }),
     });
     const data = await response.json();
-    const rideId = data?.ride?._id;
     if (response.ok) {
       toast.success(data.message, {
         position: "top-center",
@@ -73,7 +77,6 @@ function RiderRides() {
           background: "#418B24",
         },
       });
-      router.push(`/ride/${rideId}`);
     } else {
       toast.error(data.message, {
         position: "top-center",

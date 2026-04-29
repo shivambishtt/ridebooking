@@ -61,7 +61,6 @@ app.post("/ride-accepted", (request, response) => {
 
   io.emit("ride-taken", { rideId });
   io.to(captainId).emit("ride-confirmed", { rideId });
-  io.to(captainId).emit("ride-accepted", { rideId });
   io.to(riderId).emit("ride-accepted", { rideId });
   response.json({ success: true });
 });
