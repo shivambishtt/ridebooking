@@ -38,6 +38,7 @@ function RideCard({ rides }: { rides: Ride[] }) {
             background: "#418B24",
           },
         });
+        router.push(`ride/${rideId}`);
       }
     } catch (error) {
       console.log("ERROR:", error);

@@ -50,10 +50,6 @@ function CaptainView() {
 
       if (response.ok) {
         setRide(data.ride);
-        toast.success(data.message, {
-          position: "top-center",
-          style: { background: "#418B24" },
-        });
       } else {
         toast.error(data.message, {
           position: "top-center",

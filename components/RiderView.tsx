@@ -63,7 +63,7 @@ function RiderView() {
     const handler = ({ captainId }: { captainId: string }) => {
       console.log("Captain arrived", captainId);
       setRide((prev) => (prev ? { ...prev, status: "arrived" } : prev));
-      toast.success("Captain arrived at your location", {
+      toast.success("Captain arrived at your location", {   
         position: "top-center",
         style: { background: "#418B24" },
       });

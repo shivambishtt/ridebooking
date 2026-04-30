@@ -16,11 +16,11 @@ enum PaymentMode {
 
 interface IPayment extends Document {
   ride: Schema.Types.ObjectId;
+  rider: Schema.Types.ObjectId;
   amount: number;
   currency: string;
   paymentMode: PaymentMode;
   paymentStatus: PaymentStatus;
-  transactionId: string;
   orderId: string;
   razorpayPaymentId: string;
   razorpaySignature: string;
@@ -31,6 +31,11 @@ const paymentSchema = new Schema<IPayment>(
     ride: {
       type: Schema.Types.ObjectId,
       ref: "Ride",
+      required: true,
+    },
+    rider: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     amount: {
@@ -48,11 +53,7 @@ const paymentSchema = new Schema<IPayment>(
     paymentMode: {
       type: String,
       enum: Object.values(PaymentMode),
-      default: PaymentMode.UPI,
-    },
-    transactionId: {
-      type: String,
-      unique: true,
+      default: null,
     },
     orderId: {
       type: String,
@@ -67,16 +68,6 @@ const paymentSchema = new Schema<IPayment>(
   { timestamps: true },
 );
 
-export const Payment =
-  mongoose.models.Payment<IPayment> ??
-  mongoose.model<IPayment>("Payment", paymentSchema);
-
-paymentSchema.pre("validate", function () {
-  if (!this.transactionId) {
-    this.transactionId = `t_ID-${randomUUID()}`;
-  }
-});
-
 paymentSchema.post("save", async function (doc) {
   if (doc.paymentStatus === "success") {
     await mongoose.model("Ride").findByIdAndUpdate(doc.ride, {
@@ -84,3 +75,7 @@ paymentSchema.post("save", async function (doc) {
     });
   }
 });
+
+export const Payment =
+  mongoose.models.Payment<IPayment> ??
+  mongoose.model<IPayment>("Payment", paymentSchema);
