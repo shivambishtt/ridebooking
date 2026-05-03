@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import socket from "@/lib/socket";
+import PaymentButton from "./PaymentButton";
 
 interface Ride {
   status: string;
@@ -63,7 +64,7 @@ function RiderView() {
     const handler = ({ captainId }: { captainId: string }) => {
       console.log("Captain arrived", captainId);
       setRide((prev) => (prev ? { ...prev, status: "arrived" } : prev));
-      toast.success("Captain arrived at your location", {   
+      toast.success("Captain arrived at your location", {
         position: "top-center",
         style: { background: "#418B24" },
       });
@@ -182,12 +183,15 @@ function RiderView() {
               </div>
             </CardDescription>
           </CardHeader>
-          <CardFooter className="flex items-center justify-center">
+          <CardFooter className="flex items-center justify-center flex-col">
             {ride.status === "completed" && (
               <CardTitle className="text-md">
                 Please pay ₹{fare} to Captain
               </CardTitle>
             )}
+            <span className="mt-4">
+              {ride.status === "completed" && <PaymentButton fare={fare} />}
+            </span>
             {["accepted", "arrived"].includes(ride.status) && (
               <CardTitle className="text-md">
                 OTP - <span className="text-primary">{otp}</span>
