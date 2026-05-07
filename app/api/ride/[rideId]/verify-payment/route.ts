@@ -30,8 +30,11 @@ export async function POST(
       );
     }
 
-    const { razorpay_order_id, razorpay_signature, razorpay_payment_id } =
-      await req.json();
+    const {
+      razorpay_order_id,
+      razorpay_signature,
+      razorpay_payment_id,
+    } = await req.json();
 
     if (!razorpay_order_id || !razorpay_signature || !razorpay_payment_id) {
       return NextResponse.json(

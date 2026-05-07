@@ -16,7 +16,7 @@ enum PaymentMode {
 
 interface IPayment extends Document {
   ride: Schema.Types.ObjectId;
-  rider: Schema.Types.ObjectId;
+  rider?: Schema.Types.ObjectId;
   amount: number;
   currency: string;
   paymentMode: PaymentMode;
@@ -36,7 +36,7 @@ const paymentSchema = new Schema<IPayment>(
     rider: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      // required: true,
     },
     amount: {
       type: Number,

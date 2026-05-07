@@ -13,7 +13,7 @@ function PaymentButton({ fare }: { fare: number }) {
   const handlePayment = async () => {
     const loaded = await loadRazorpay();
     if (!loaded) {
-      toast.error("Failed to load payment gateway");
+      toast.error("Failed to load razorpay payment gateway");
       return;
     }
     const orderRes = await fetch(`/api/ride/${rideId}/create-order`, {
@@ -21,26 +21,43 @@ function PaymentButton({ fare }: { fare: number }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ amount: fare, rideId }),
     });
-    const { orderId, amount } = await orderRes.json();
+
+    if (!orderRes.ok) {
+      const error = await orderRes.json();
+      toast.error(error.message || "Failed to create order");
+      return;
+    }
+    const { order } = await orderRes.json();
+    const orderId = order.id;
+    const amount = order.amount;
 
     const options = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-      amount, // in paise
+      amount,
       currency: "INR",
-      name: "YourAppName",
-      description: "Ride Payment",
+      name: "EZRides",
+      description: "Payment for your ride",
       order_id: orderId,
+      modal: {
+        ondismiss: () => {
+          toast.error("Payment cancelled", {
+            position: "top-center",
+            style: { background: "#D50419" },
+          });
+        },
+      },
 
       handler: async (response: any) => {
         const verifyRes = await fetch(`/api/ride/${rideId}/verify-payment`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
             razorpayOrderId: response.razorpay_order_id,
-            razorpayPaymentId: response.razorpay_payment_id,
             razorpaySignature: response.razorpay_signature,
+            razorpayPaymentId: response.razorpay_payment_id,
             rideId,
-            riderId: session.data?.user.id,
           }),
         });
 
@@ -77,13 +94,13 @@ function PaymentButton({ fare }: { fare: number }) {
           },
           sequence: ["block.upi", "block.card"],
           preferences: {
-            show_default_blocks: true, 
+            show_default_blocks: true,
           },
         },
       },
 
       theme: {
-        color: "#your-primary-color",
+        color: "#418B24",
       },
     };
 
@@ -95,7 +112,6 @@ function PaymentButton({ fare }: { fare: number }) {
         style: { background: "#D50419" },
       });
     });
-
     razorpay.open();
   };
   return (

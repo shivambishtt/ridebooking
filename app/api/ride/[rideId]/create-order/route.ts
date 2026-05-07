@@ -1,8 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
 import { Ride } from "@/models/RideModel";
-import { razorpay } from "@/lib/razorpay";
+import Razorpay from "razorpay";
 import { Payment } from "@/models/PaymentModel";
+
+if (
+  !process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
+  !process.env.RAZORPAY_SECRET_KEY
+) {
+  console.log("Environment variables missing");
+}
+
+const razorpay = new Razorpay({
+  key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID as string,
+  key_secret: process.env.RAZORPAY_SECRET_KEY as string,
+});
 
 export async function POST(
   req: NextRequest,
@@ -10,7 +22,6 @@ export async function POST(
 ) {
   try {
     await connectDB();
-
     const { rideId } = await params;
     if (!rideId) {
       return NextResponse.json(
@@ -56,7 +67,7 @@ export async function POST(
       amount: order.amount,
       orderId: order.id,
       paymentStatus: "pending",
-      paymentMode: "UPI",
+      paymentMode: null,
     });
 
     return NextResponse.json(
