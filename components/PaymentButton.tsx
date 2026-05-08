@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { loadRazorpay } from "@/lib/razorpay";
 import { useSession } from "next-auth/react";
 
-function PaymentButton({ fare }: { fare: number }) {
+function PaymentButton({ fare, ride }: { fare: number; ride: any }) {
   const { rideId } = useParams();
   const session = useSession();
 
@@ -54,9 +54,9 @@ function PaymentButton({ fare }: { fare: number }) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            razorpayOrderId: response.razorpay_order_id,
-            razorpaySignature: response.razorpay_signature,
-            razorpayPaymentId: response.razorpay_payment_id,
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_signature: response.razorpay_signature,
+            razorpay_payment_id: response.razorpay_payment_id,
             rideId,
           }),
         });
@@ -116,7 +116,10 @@ function PaymentButton({ fare }: { fare: number }) {
   };
   return (
     <div>
-      <Button onClick={handlePayment}>Pay</Button>
+     {ride.status==="completed" && (
+<Button onClick={handlePayment}>Pay</Button>
+     )}
+        
     </div>
   );
 }

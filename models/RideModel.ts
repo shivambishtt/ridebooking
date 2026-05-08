@@ -4,8 +4,10 @@ import { VehicleType } from "@/lib/types";
 enum RideStatus {
   SEARCHING = "searching",
   ACCEPTED = "accepted",
+  ARRIVED = "arrived",
   ONGOING = "ongoing",
   COMPLETED = "completed",
+  PAYMENT_PENDING="payment_pending:",
   CANCELLED = "cancelled",
   TIMEOUT = "timeout",
 }
@@ -109,7 +111,8 @@ rideSchema.pre("save", async function () {
     searching: ["accepted", "timeout", "cancelled"],
     arrived: ["ongoing", "cancelled"],
     accepted: ["arrived", "cancelled"],
-    ongoing: ["completed", "cancelled"],
+    ongoing: ["payment_pending", "cancelled"],
+    payment_pending: ["completed", "cancelled"],
     completed: [],
     cancelled: [],
     timeout: [],

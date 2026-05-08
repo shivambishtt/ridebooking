@@ -184,13 +184,15 @@ function RiderView() {
             </CardDescription>
           </CardHeader>
           <CardFooter className="flex items-center justify-center flex-col">
-            {ride.status === "completed" && (
+            {ride.status === "completed" &&(
               <CardTitle className="text-md">
-                Please pay ₹{fare} to Captain
+                Payment Done
               </CardTitle>
-            )}
+            )} 
             <span className="mt-4">
-              {ride.status === "completed" && <PaymentButton fare={fare} />}
+              {ride.status === "completed" && (
+                <PaymentButton fare={fare} ride={ride} />
+              )}
             </span>
             {["accepted", "arrived"].includes(ride.status) && (
               <CardTitle className="text-md">

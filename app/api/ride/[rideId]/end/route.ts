@@ -28,8 +28,7 @@ export async function PATCH(
 
     if (!mongoose.Types.ObjectId.isValid(rideId)) {
       return NextResponse.json({ message: "Invalid Ride ID" }, { status: 400 });
-    }
-
+    }    
     const ride = await Ride.findOneAndUpdate(
       {
         _id: rideId,

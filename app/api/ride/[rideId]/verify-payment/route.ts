@@ -30,23 +30,20 @@ export async function POST(
       );
     }
 
-    const {
-      razorpay_order_id,
-      razorpay_signature,
-      razorpay_payment_id,
-    } = await req.json();
+    const { razorpay_order_id, razorpay_signature, razorpay_payment_id } =
+      await req.json();
 
     if (!razorpay_order_id || !razorpay_signature || !razorpay_payment_id) {
       return NextResponse.json(
         {
-          message: "Missing razorpay config",
+          message: "Missing razorpay configuration in request body",
         },
         { status: 400 },
       );
     }
 
     const generatedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_TEST_SECRET_KEY as string)
+      .createHmac("sha256", process.env.RAZORPAY_SECRET_KEY as string)
       .update(razorpay_order_id + "|" + razorpay_payment_id)
       .digest("hex");
 
@@ -63,14 +60,13 @@ export async function POST(
       },
       {
         $set: {
-          razorpayPaymentId: razorpay_payment_id,
-          razorpaySignature: razorpay_signature,
+          razorpay_payment_id: razorpay_payment_id,
+          razorpay_signature: razorpay_signature,
           paymentStatus: "success",
         },
       },
       { new: true },
     );
-
     if (!payment) {
       return NextResponse.json(
         { message: "Payment not found" },
