@@ -116,10 +116,9 @@ function PaymentButton({ fare, ride }: { fare: number; ride: any }) {
   };
   return (
     <div>
-     {ride.status==="completed" && (
-<Button onClick={handlePayment}>Pay</Button>
-     )}
-        
+      {ride.status === "payment_pending" && (
+        <Button onClick={handlePayment}>Pay</Button>
+      )}
     </div>
   );
 }

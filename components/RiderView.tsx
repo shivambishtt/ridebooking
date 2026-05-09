@@ -81,8 +81,15 @@ function RiderView() {
 
     const endHandler = ({ captainId }: { captainId: string }) => {
       console.log("Reached at destination", captainId);
+      setRide((prev) => (prev ? { ...prev, status: "payment_pending" } : prev));
+      toast.success("Ride Ended succesfully.", {
+        position: "top-center",
+        style: { background: "#418B24" },
+      });
+    };
+    const paymentHandler = ({ rideId }: { rideId: string }) => {
       setRide((prev) => (prev ? { ...prev, status: "completed" } : prev));
-      toast.success("Ride Completed succesfully", {
+      toast.success("Payment received from rider", {
         position: "top-center",
         style: { background: "#418B24" },
       });
@@ -91,11 +98,13 @@ function RiderView() {
     socket.on("captain-arrived", handler);
     socket.on("ride-started", startHandler);
     socket.on("ride-completed", endHandler);
+    socket.on("payment-completed", paymentHandler);
 
     return () => {
       socket.off("captain-arrived", handler);
       socket.off("ride-started", startHandler);
       socket.off("ride-completed", endHandler);
+      socket.off("payment-completed", paymentHandler);
     };
   }, []);
 
@@ -134,6 +143,11 @@ function RiderView() {
               {ride.status === "ongoing" && (
                 <h1 className="text-md font-semibold">
                   Heading towards destination
+                </h1>
+              )}
+              {ride.status === "payment_pending" && (
+                <h1 className="text-md font-semibold">
+                  Please pay fare to Captain
                 </h1>
               )}
               {ride.status === "completed" && (
@@ -184,13 +198,11 @@ function RiderView() {
             </CardDescription>
           </CardHeader>
           <CardFooter className="flex items-center justify-center flex-col">
-            {ride.status === "completed" &&(
-              <CardTitle className="text-md">
-                Payment Done
-              </CardTitle>
-            )} 
+            {ride.status === "completed" && (
+              <CardTitle className="text-md">Payment Done</CardTitle>
+            )}
             <span className="mt-4">
-              {ride.status === "completed" && (
+              {ride.status === "payment_pending" && (
                 <PaymentButton fare={fare} ride={ride} />
               )}
             </span>

@@ -74,6 +74,15 @@ export async function POST(
       );
     }
 
+    await Ride.findOneAndUpdate(
+      {
+        _id: rideId,
+        status: "payment_pending",
+      },
+      { $set: { status: "completed" } },
+      { new: true },
+    );
+
     return NextResponse.json(
       { message: "Payment successful", payment },
       { status: 200 },

@@ -6,6 +6,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Ride } from "@/models/RideModel";
 import mongoose from "mongoose";
 import { calculateFare } from "@/lib/calculateFare";
+import { Payment } from "@/models/PaymentModel";
 
 export async function PATCH(
   req: NextRequest,
@@ -35,7 +36,7 @@ export async function PATCH(
         captain: session.user.id,
         status: "ongoing",
       },
-      { $set: { status: "completed" } },
+      { $set: { status: "payment_pending" } },
       { new: true },
     );
 
@@ -53,7 +54,7 @@ export async function PATCH(
 
     return NextResponse.json(
       {
-        message: "Ride completed successfully. Collect fare",
+        message: "Ride ended successfully. Please collect fare",
         ride: {
           fare,
         },

@@ -7,7 +7,7 @@ enum RideStatus {
   ARRIVED = "arrived",
   ONGOING = "ongoing",
   COMPLETED = "completed",
-  PAYMENT_PENDING="payment_pending:",
+  PAYMENT_PENDING="payment_pending",
   CANCELLED = "cancelled",
   TIMEOUT = "timeout",
 }

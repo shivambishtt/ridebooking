@@ -60,6 +60,21 @@ function CaptainView() {
     if (rideId) getRideDetails();
   }, [rideId]);
 
+  useEffect(() => {
+    const paymentHandler = ({ riderId }: { riderId: string }) => {
+      console.log("Payment completed", riderId);
+      toast.success("Payment received from rider", {
+        position: "top-center",
+        style: { background: "#418B24" },
+      });
+    };
+    socket.on("payment-completed", paymentHandler);
+
+    return () => {
+      socket.off("payment-completed", paymentHandler);
+    };
+  }, []);
+
   if (!ride) return <p>Loading...</p>;
 
   const { rider, pickupLocation, dropLocation, distance, fare, status } = ride;
@@ -190,10 +205,13 @@ function CaptainView() {
               {ride.status === "ongoing" && (
                 <h1 className="text-md font-semibold">Trip Ongoing</h1>
               )}
-              {ride.status === "completed" && (
+              {ride.status === "payment_pending" && (
                 <h1 className="text-md font-semibold">
                   Collect ₹{fare} from rider
                 </h1>
+              )}
+              {ride.status === "completed" && (
+                <h1 className="text-md font-semibold">Trip Completed</h1>
               )}
             </span>
 
@@ -298,9 +316,7 @@ function CaptainView() {
                 Finish Ride
               </Button>
             )}
-            {status === "completed" && (
-              <h1>Payment collection logic goes here</h1>
-            )}
+            {status === "completed" && <h1>Display payment status here</h1>}
           </CardFooter>
         </Card>
       </div>
