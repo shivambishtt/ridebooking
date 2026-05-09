@@ -15,6 +15,7 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import socket from "@/lib/socket";
 import PaymentButton from "./PaymentButton";
+import { router } from "next/client";
 
 interface Ride {
   status: string;
@@ -87,12 +88,18 @@ function RiderView() {
         style: { background: "#418B24" },
       });
     };
+
     const paymentHandler = ({ rideId }: { rideId: string }) => {
-      setRide((prev) => (prev ? { ...prev, status: "completed" } : prev));
-      toast.success("Payment received from rider", {
+      console.log("Payment completed for ride", rideId);
+      toast.success("Payment completed. Thank you for riding with us!", {
         position: "top-center",
         style: { background: "#418B24" },
       });
+      setRide((prev) => (prev ? { ...prev, status: "completed" } : prev));
+
+      setTimeout(() => {
+        router.push("/");
+      }, 5000);
     };
 
     socket.on("captain-arrived", handler);

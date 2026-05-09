@@ -43,9 +43,14 @@ io.on("connection", (socket) => {
     io.to(riderId).emit("ride-completed", captainId);
   });
 
-  socket.on("payment-completed", ({ captainId, rideId, riderId }) => {
-    console.log("Payment completed", rideId, riderId);
-    io.to(captainId).emit("payment-completed", rideId);
+  socket.on("payment-completed", ({ rideId, riderId, captainId }) => {
+    console.log("Payment completed for ride", rideId);
+    if (riderId) {
+      io.to(riderId).emit("payment-completed", { rideId });
+    }
+    if (captainId) {
+      io.to(captainId).emit("payment-completed", { rideId });
+    }
   });
 
   socket.on("disconnect", () => {

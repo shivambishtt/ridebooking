@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { loadRazorpay } from "@/lib/razorpay";
 import { useSession } from "next-auth/react";
+import socket from "@/lib/socket";
 
 function PaymentButton({ fare, ride }: { fare: number; ride: any }) {
   const { rideId } = useParams();
@@ -67,6 +68,14 @@ function PaymentButton({ fare, ride }: { fare: number; ride: any }) {
             position: "top-center",
             style: { background: "#418B24" },
           });
+
+          if (session.data?.user.id && ride?.captain?._id) {
+            socket.emit("payment-completed", {
+              rideId,
+              riderId: session.data.user.id,
+              captainId: ride.captain._id,
+            });
+          }
         } else {
           toast.error(data.message, {
             position: "top-center",

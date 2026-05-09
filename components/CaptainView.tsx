@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import socket from "@/lib/socket";
 import { useSession } from "next-auth/react";
 import { Input } from "./ui/input";
+import { useRouter } from "next/navigation";
 
 interface Ride {
   rider: {
@@ -38,6 +39,7 @@ interface Ride {
 
 function CaptainView() {
   const session = useSession();
+  const router = useRouter();
   const { rideId } = useParams();
   const [ride, setRide] = useState<Ride | null>(null);
   const [otpOpen, setOtpOpen] = useState(false);
@@ -61,19 +63,23 @@ function CaptainView() {
   }, [rideId]);
 
   useEffect(() => {
-    const paymentHandler = ({ riderId }: { riderId: string }) => {
-      console.log("Payment completed", riderId);
+    const paymentHandler = ({ rideId }: { rideId: string }) => {
+      console.log("Payment completed", rideId);
       toast.success("Payment received from rider", {
         position: "top-center",
         style: { background: "#418B24" },
       });
+      setRide((prev) => (prev ? { ...prev, status: "completed" } : prev));
+      setTimeout(() => {
+        router.push("/rides");
+      }, 5000);
     };
     socket.on("payment-completed", paymentHandler);
 
     return () => {
       socket.off("payment-completed", paymentHandler);
     };
-  }, []);
+  }, [router]);
 
   if (!ride) return <p>Loading...</p>;
 
