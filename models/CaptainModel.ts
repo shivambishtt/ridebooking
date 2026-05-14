@@ -9,6 +9,7 @@ export interface ICaptain extends Document {
   phoneNumber: string;
   vehicle: Schema.Types.ObjectId;
   vehicleType: VehicleType;
+  walletBalance: number;
   provider: "credentials" | "google" | "github";
   rating: number;
   isAvailable: boolean;
@@ -57,6 +58,11 @@ const captainSchema = new Schema<ICaptain>(
     rating: {
       type: Number,
       default: 5,
+    },
+    
+    walletBalance: {
+      type: Number,
+      default: 0,
     },
 
     isAvailable: {

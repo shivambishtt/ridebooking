@@ -62,40 +62,85 @@ function CaptainRides() {
 
   const handleChecked = async (checked: boolean) => {
     const updatedStatus = checked;
-    const response = await fetch("/api/captain/location", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        longitude: 77.1025,
-        latitude: 28.7041,
-        isAvailable: updatedStatus,
-      }),
-    });
-    const data = await response.json();
 
-    if (!response.ok) {
-      toast.error(data.message, {
-        position: "top-center",
-        style: { background: "#D50419" },
-      });
-    } else {
-      setIsAvailable(data.captain?.isAvailable);
-      const captainId = data.captain._id || session.data?.user?.id;
-
-      if (updatedStatus) {
-        socket.emit("captain-online", {
-          captainId,
-        });
-      }
-      toast.success(data.message, {
+    if (!navigator.geolocation) {
+      toast.error("Geolocation is not supported", {
         position: "top-center",
         style: {
-          background: "#418B24",
+          background: "#D50419",
         },
       });
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+
+          const response = await fetch("/api/captain/location", {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              longitude,
+              latitude,
+              isAvailable: updatedStatus,
+            }),
+          });
+
+          const data = await response.json();
+          if (!response.ok) {
+            toast.error(data.message, {
+              position: "top-center",
+              style: {
+                background: "#D50419",
+              },
+            });
+          } else {
+            setIsAvailable(data.captain?.isAvailable);
+            const captainId = data.captain._id || session.data?.user?.id;
+
+            if (updatedStatus) {
+              socket.emit("captain-online", {
+                captainId,
+              });
+            }
+            toast.success(data.message, {
+              position: "top-center",
+              style: {
+                background: "#418B24",
+              },
+            });
+          }
+        } catch (error) {
+          console.log(error);
+          toast.error("Failed to update location", {
+            position: "top-center",
+          });
+        }
+      },
+      (error) => {
+        console.log(error);
+
+        toast.error(
+          "Location permission denied. Please allow location access.",
+          {
+            position: "top-center",
+
+            style: {
+              background: "#D50419",
+            },
+          },
+        );
+      },
+
+      {
+        enableHighAccuracy: true,
+      },
+    );
   };
 
   return (

@@ -6,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Image from "next/image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "./ui/separator";
 import getInitials from "@/lib/getInitials";
@@ -130,13 +129,9 @@ function RiderView() {
       <div>
         <Card className="relative mx-auto w-full max-w-sm pt-0">
           <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
-          <Image
-            width={20}
-            height={30}
-            src=""
-            alt="Event cover"
-            className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
-          />
+          <div className="relative z-20 aspect-video w-full bg-linear-to-br from-gray-700 to-gray-900 brightness-60 grayscale dark:brightness-40 flex items-center justify-center">
+            <span className="text-gray-300 text-sm">Captain Location</span>
+          </div>
           <CardHeader>
             <span className="flex items-center justify-center">
               {ride.status === "accepted" && (

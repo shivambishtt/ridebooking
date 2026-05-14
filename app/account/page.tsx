@@ -1,8 +1,13 @@
+"use client";
+import { useSession } from "next-auth/react";\
+import Button from "@/components/ui/button";
+
 export default function AccountsPage() {
+  const session = useSession();
   const user = {
-    name: "Shivam Bisht",
-    email: "shivam@example.com",
-    phone: "+91 9876543210",
+    name: session.data?.user.name,
+    email: session.data?.user.email,
+    phone: "+91 9773561076",
     rides: 128,
     rating: 4.9,
     joined: "July 2025",
@@ -35,7 +40,6 @@ export default function AccountsPage() {
   return (
     <div className="min-h-screen bg-black text-white p-6 md:p-10">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* LEFT PROFILE SECTION */}
         <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-2xl">
           <div className="flex flex-col items-center text-center">
             <div className="w-28 h-28 rounded-full bg-primary flex items-center justify-center text-4xl font-bold text-black shadow-lg">
@@ -56,16 +60,10 @@ export default function AccountsPage() {
                 <span className="font-semibold">{user.joined}</span>
               </div>
             </div>
-
-            <button className="mt-6 w-full py-3 rounded-2xl bg-primary text-black font-bold hover:opacity-90 transition-all">
-              Edit Profile
-            </button>
           </div>
         </div>
 
-        {/* RIGHT CONTENT */}
         <div className="lg:col-span-2 flex flex-col gap-6">
-          {/* STATS */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-xl">
               <p className="text-zinc-400">Total Rides</p>
@@ -83,36 +81,34 @@ export default function AccountsPage() {
             </div>
           </div>
 
-          {/* QUICK ACTIONS */}
           <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-xl">
             <h2 className="text-2xl font-bold mb-5">Quick Actions</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              <button className="bg-zinc-800 hover:bg-primary hover:text-black transition-all rounded-2xl p-5 font-semibold">
+              <Button className="bg-zinc-800 hover:bg-primary hover:text-black transition-all rounded-2xl p-5 font-semibold">
                 My Rides
-              </button>
+              </Button>
 
-              <button className="bg-zinc-800 hover:bg-primary hover:text-black transition-all rounded-2xl p-5 font-semibold">
+              <Button className="bg-zinc-800 hover:bg-primary hover:text-black transition-all rounded-2xl p-5 font-semibold">
                 Payments
-              </button>
+              </Button>
 
-              <button className="bg-zinc-800 hover:bg-primary hover:text-black transition-all rounded-2xl p-5 font-semibold">
+              <Button className="bg-zinc-800 hover:bg-primary hover:text-black transition-all rounded-2xl p-5 font-semibold">
                 Saved Places
-              </button>
+              </Button>
 
-              <button className="bg-zinc-800 hover:bg-red-500 transition-all rounded-2xl p-5 font-semibold">
+              <Button className="bg-zinc-800 hover:bg-red-500 transition-all rounded-2xl p-5 font-semibold">
                 Logout
-              </button>
+              </Button>
             </div>
           </div>
 
-          {/* RECENT RIDES */}
           <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-xl">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold">Recent Rides</h2>
-              <button className="text-primary font-semibold hover:underline">
+              <Button className="text-primary font-semibold hover:underline">
                 View All
-              </button>
+              </Button>
             </div>
 
             <div className="space-y-4">

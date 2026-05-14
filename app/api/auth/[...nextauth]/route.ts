@@ -51,7 +51,7 @@ export const authOptions: NextAuthOptions = {
           id: account._id.toString(),
           email: account.email,
           name: account.name,
-          phoneNumber: account.phonenNumber,
+          phoneNumber: account.phoneNumber,
           role,
         };
       },
@@ -65,7 +65,6 @@ export const authOptions: NextAuthOptions = {
         token.name = user.name;
         token.email = user.email;
         token.role = user.role;
-        token.phoneNumber = user.phoneNumber;
       }
       return token;
     },
