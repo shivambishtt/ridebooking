@@ -35,7 +35,6 @@ const paymentSchema = new Schema<IPayment>(
     rider: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      // required: true,
     },
     amount: {
       type: Number,
