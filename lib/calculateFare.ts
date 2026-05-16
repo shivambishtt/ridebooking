@@ -1,9 +1,5 @@
 import { VehicleType } from "./types";
 
-const BASE_FARE = 40;
-const FARE_PER_KM = 12;
-const MIN_FARE = 50;
-
 export const VEHICLE_RATES = {
   two_wheeler: {
     BASE_FARE: 20,

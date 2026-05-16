@@ -100,17 +100,14 @@ function RideCard({ rides }: { rides: Ride[] }) {
 
               <div className="mt-6 rounded-2xl border bg-muted/30 p-4 space-y-5">
                 <div className="flex items-start gap-4">
-                  {/* ICON + LINE */}
                   <div className="flex flex-col items-center">
                     <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center shrink-0">
                       <MapPin className="h-5 w-5 text-green-600" />
                     </div>
 
-                    {/* CONNECTING LINE */}
                     <div className="w-0.5 h-10 bg-border mt-1" />
                   </div>
 
-                  {/* TEXT */}
                   <div className="flex-1 min-w-0">
                     <p className="text-xs uppercase tracking-wide text-muted-foreground font-medium">
                       Pickup

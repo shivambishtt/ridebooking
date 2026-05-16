@@ -14,9 +14,9 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import socket from "@/lib/socket";
 import PaymentButton from "./PaymentButton";
-import { router } from "next/client";
+import { useRouter } from "next/navigation";
 
-interface Ride {
+export interface Ride {
   status: string;
   fare: number;
   otp: string;
@@ -36,8 +36,10 @@ interface Ride {
 }
 
 function RiderView() {
+  const router = useRouter();
   const { rideId } = useParams();
   const [ride, setRide] = useState<Ride | null>(null);
+  const [paymentLoading, setPaymentLoading] = useState(false);
 
   useEffect(() => {
     const getRideDetails = async () => {
@@ -205,7 +207,12 @@ function RiderView() {
             )}
             <span className="mt-4">
               {ride.status === "payment_pending" && (
-                <PaymentButton fare={fare} ride={ride} />
+                <PaymentButton
+                  paymentLoading={paymentLoading}
+                  setPaymentLoading={setPaymentLoading}
+                  fare={fare}
+                  ride={ride}
+                />
               )}
             </span>
             {["accepted", "arrived"].includes(ride.status) && (

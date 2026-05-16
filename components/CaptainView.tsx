@@ -18,6 +18,7 @@ import socket from "@/lib/socket";
 import { useSession } from "next-auth/react";
 import { Input } from "./ui/input";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 interface Ride {
   rider: {
@@ -42,11 +43,14 @@ function CaptainView() {
   const router = useRouter();
   const { rideId } = useParams();
   const [ride, setRide] = useState<Ride | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [rideCompleting, setRideCompleting] = useState(false);
   const [otpOpen, setOtpOpen] = useState(false);
   const [otp, setOtp] = useState("");
 
   useEffect(() => {
     const getRideDetails = async () => {
+      setLoading(true);
       const response = await fetch(`/api/ride/${rideId}`);
       const data = await response.json();
 
@@ -58,6 +62,7 @@ function CaptainView() {
           style: { background: "#D50419" },
         });
       }
+      setLoading(false);
     };
     if (rideId) getRideDetails();
   }, [rideId]);
@@ -77,11 +82,16 @@ function CaptainView() {
     socket.on("payment-completed", paymentHandler);
 
     return () => {
-      socket.off("payment-completed", paymentHandler);
+    socket.off("payment-completed", paymentHandler);
     };
   }, [router]);
 
-  if (!ride) return <p>Loading...</p>;
+  if (!ride || loading)
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center">
+        <Loader2 className="animate-spin" size={80} />
+      </div>
+    );
 
   const { rider, pickupLocation, dropLocation, distance, fare, status } = ride;
 
@@ -163,6 +173,7 @@ function CaptainView() {
   };
 
   const handleRideCompleted = async () => {
+    setRideCompleting(true);
     const response = await fetch(`/api/ride/${rideId}/end`, {
       method: "PATCH",
     });
@@ -174,12 +185,14 @@ function CaptainView() {
           background: "#D50419",
         },
       });
+      return;
     } else {
       socket.emit("ride-completed", {
         captainId: session.data?.user.id,
         riderId: ride.rider._id,
       });
       setRide((prev) => (prev ? { ...prev, status: "completed" } : prev));
+      setRideCompleting(false);
     }
   };
 
@@ -317,12 +330,17 @@ function CaptainView() {
             {status === "ongoing" && (
               <Button
                 onClick={handleRideCompleted}
-                className="hover:cursor-pointer w-full bg-primary text-black"
+                disabled={rideCompleting}
+                className="w-full bg-primary text-black disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Finish Ride
+                {rideCompleting ? (
+                  <Loader2 className="animate-spin" size={18} />
+                ) : (
+                  "Finish Ride"
+                )}
               </Button>
             )}
-            {status === "completed" && <h1>Display payment status here</h1>}
+            {status === "completed" && <h1>Collect fare from Rider</h1>}
           </CardFooter>
         </Card>
       </div>
