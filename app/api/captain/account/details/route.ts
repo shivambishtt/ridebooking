@@ -4,17 +4,19 @@ import { Ride } from "@/models/RideModel";
 import { Captain } from "@/models/CaptainModel";
 import { Payment } from "@/models/PaymentModel";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
 import mongoose from "mongoose";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
-
     const session = await getServerSession(authOptions);
 
     if (!session) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { message: "Unauthorized request" },
+        { status: 401 },
+      );
     }
 
     const captainId = session.user.id;
@@ -80,11 +82,11 @@ export async function GET(req: NextRequest) {
         stats: {
           ride,
           totalRides,
+          recentRides,
           completedRides,
           cancelledRides,
           totalEarnings,
         },
-        recentRides,
       },
       { status: 200 },
     );
