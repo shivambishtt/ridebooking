@@ -26,10 +26,10 @@ function CaptainAccount() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-2xl">
           <div className="flex flex-col items-center text-center">
-            <div className="w-28 h-28 rounded-full bg-primary flex items-center justify-center text-4xl font-bold text-black shadow-lg">
+            <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-4xl font-bold text-black shadow-lg">
               {getIntials(accountData?.captain?.name)}
             </div>
-            <h1 className="mt-5 text-3xl font-bold">
+            <h1 className="mt-3 text-2xl font-bold">
               {accountData?.captain?.name}
             </h1>
             <p className="text-zinc-400 mt-1">{accountData?.captain?.email}</p>
@@ -44,7 +44,7 @@ function CaptainAccount() {
 
               <div className="bg-zinc-800 rounded-2xl p-4 flex items-center justify-between">
                 <span className="text-zinc-400">Joined</span>
-                <span className="font-semibold">March,2026</span>
+                <span className="font-semibold">March 2026</span>
               </div>
             </div>
           </div>
@@ -54,14 +54,14 @@ function CaptainAccount() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-xl">
               <p className="text-zinc-400">Total Rides</p>
-              <h1 className="text-4xl font-bold mt-2">
-                {accountData?.recentRides.length}
+              <h1 className="text-3xl font-bold mt-2">
+                {accountData?.stats.recentRides.length}
               </h1>
             </div>
 
             <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-xl">
               <p className="text-zinc-400">Wallet Balance</p>
-              <h1 className="text-4xl font-bold mt-2">
+              <h1 className="text-3xl font-bold mt-2">
                 ₹{accountData?.stats?.totalEarnings}
               </h1>
             </div>
@@ -92,7 +92,7 @@ function CaptainAccount() {
           <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-xl">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold">Recent Rides</h2>
-              <Button className="text-primary font-semibold hover:underline">
+              <Button className="font-semibold hover:cursor-pointer">
                 View All
               </Button>
             </div>
@@ -105,21 +105,28 @@ function CaptainAccount() {
                 >
                   <div>
                     <p className="text-sm text-zinc-400">From</p>
-                    <h3 className="font-semibold text-lg">
+                    <h3 className="font-semibold text-md">
                       {ride.pickupLocation.address}
                     </h3>
                   </div>
 
                   <div>
                     <p className="text-sm text-zinc-400">To</p>
-                    <h3 className="font-semibold text-lg">
+                    <h3 className="font-semibold text-md">
                       {ride.dropLocation.address}
                     </h3>
                   </div>
 
                   <div>
                     <p className="text-sm text-zinc-400">Fare</p>
-                    <h3 className="font-semibold text-lg">₹{ride.fare}</h3>
+                    <h3 className="font-semibold text-md">₹{ride.fare}</h3>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-zinc-400">Distance</p>
+                    <h3 className="font-semibold text-md">
+                      {ride.distance} KM
+                    </h3>
                   </div>
 
                   <div>

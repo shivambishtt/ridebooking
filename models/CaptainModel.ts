@@ -59,7 +59,7 @@ const captainSchema = new Schema<ICaptain>(
       type: Number,
       default: 5,
     },
-    
+
     walletBalance: {
       type: Number,
       default: 0,

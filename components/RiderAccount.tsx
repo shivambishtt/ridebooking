@@ -30,11 +30,11 @@ function RiderAccount() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-2xl">
           <div className="flex flex-col items-center text-center">
-            <div className="w-28 h-28 rounded-full bg-primary flex items-center justify-center text-4xl font-bold text-black shadow-lg">
+            <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-4xl font-bold text-black shadow-lg">
               {getIntials(accountData?.rider?.name)}
             </div>
 
-            <h1 className="mt-5 text-3xl font-bold">
+            <h1 className="mt-3 text-2xl font-bold">
               {accountData?.rider?.name}
             </h1>
 
@@ -62,21 +62,21 @@ function RiderAccount() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-xl">
               <p className="text-zinc-400">Total Trips</p>
-              <h1 className="text-4xl font-bold mt-2">
+              <h1 className="text-3xl font-bold mt-2">
                 {accountData?.stats?.totalRides}
               </h1>
             </div>
 
             <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-xl">
               <p className="text-zinc-400">Money Spent</p>
-              <h1 className="text-4xl font-bold mt-2">
+              <h1 className="text-3xl font-bold mt-2">
                 ₹{accountData?.stats?.totalSpent}
               </h1>
             </div>
 
             <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-xl">
               <p className="text-zinc-400">Saved Places</p>
-              <h1 className="text-4xl font-bold mt-2">
+              <h1 className="text-3xl font-bold mt-2">
                 {accountData?.savedPlaces?.length || 0}
               </h1>
             </div>
@@ -108,7 +108,7 @@ function RiderAccount() {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold">Recent Trips</h2>
 
-              <Button className="text-primary font-semibold hover:underline">
+              <Button className="font-semibold hover:cursor-pointer">
                 View All
               </Button>
             </div>
@@ -121,21 +121,28 @@ function RiderAccount() {
                 >
                   <div>
                     <p className="text-sm text-zinc-400">Pickup</p>
-                    <h3 className="font-semibold text-lg">
+                    <h3 className="font-semibold text-md">
                       {ride.pickupLocation.address}
                     </h3>
                   </div>
 
                   <div>
                     <p className="text-sm text-zinc-400">Drop</p>
-                    <h3 className="font-semibold text-lg">
+                    <h3 className="font-semibold text-md">
                       {ride.dropLocation.address}
                     </h3>
                   </div>
 
                   <div>
                     <p className="text-sm text-zinc-400">Fare</p>
-                    <h3 className="font-semibold text-lg">₹{ride.fare}</h3>
+                    <h3 className="font-semibold text-md">₹{ride.fare}</h3>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-zinc-400">Distance</p>
+                    <h3 className="font-semibold text-md">
+                      {ride.distance} KM
+                    </h3>
                   </div>
 
                   <div>

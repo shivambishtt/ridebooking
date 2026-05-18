@@ -24,12 +24,14 @@ export async function POST(req: NextRequest) {
         { status: 409 },
       );
     }
+    const walletBalance = 0;
 
     const user = await Captain.create({
       name,
       email,
       password,
       phoneNumber,
+      walletBalance,
     });
 
     return NextResponse.json(
@@ -39,7 +41,6 @@ export async function POST(req: NextRequest) {
           id: user._id,
           name: user.name,
           email: user.email,
-          role: user.role,
           phoneNumber,
         },
       },

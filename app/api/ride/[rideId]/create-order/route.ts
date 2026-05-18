@@ -64,6 +64,8 @@ export async function POST(
 
     const payment = await Payment.create({
       ride: ride._id,
+      rider: ride.rider,
+      captain: ride.captain,
       amount: order.amount,
       orderId: order.id,
       paymentStatus: "pending",
