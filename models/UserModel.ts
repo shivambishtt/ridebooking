@@ -6,6 +6,7 @@ interface IUser extends Document {
   email: string;
   password?: string;
   phoneNumber: string;
+  moneySpent?: number;
   location?: {
     type: "Point";
     coorindates: number[];
@@ -35,6 +36,10 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: [true, "Phone number is required"],
       unique: true,
+    },
+    moneySpent: {
+      type: Number,
+      default: 0,
     },
     location: {
       type: {

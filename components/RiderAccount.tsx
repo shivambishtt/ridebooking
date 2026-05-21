@@ -70,7 +70,7 @@ function RiderAccount() {
             <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-xl">
               <p className="text-zinc-400">Money Spent</p>
               <h1 className="text-3xl font-bold mt-2">
-                ₹{accountData?.stats?.totalSpent}
+                ₹ {accountData?.stats?.totalSpent || 0}
               </h1>
             </div>
 

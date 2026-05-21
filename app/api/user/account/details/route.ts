@@ -35,6 +35,23 @@ export async function GET(req: NextRequest) {
       rider: userId,
     });
 
+    const moneySpent = await Payment.aggregate([
+      {
+        $match: {
+          rider: new mongoose.Types.ObjectId(userId),
+          paymentStatus: "success",
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          moneySpent: { $sum: "$amount" },
+        },
+      },
+    ]);
+
+    const totalSpent = moneySpent.length > 0 ? moneySpent[0].moneySpent : 0;
+
     const recentRides = await Ride.find({
       rider: userId,
     })
@@ -53,6 +70,7 @@ export async function GET(req: NextRequest) {
           ride,
           totalRides,
           recentRides,
+          totalSpent,
         },
       },
       { status: 200 },

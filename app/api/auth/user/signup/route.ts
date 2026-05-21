@@ -25,11 +25,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const moneySpent = 0;
+
     const user = await User.create({
       name,
       email,
       password,
       phoneNumber,
+      moneySpent,
     });
 
     return NextResponse.json(
@@ -39,8 +42,8 @@ export async function POST(req: NextRequest) {
           id: user._id,
           name: user.name,
           email: user.email,
+          phoneNumber: user.phoneNumber,
           role: user.role,
-          phoneNumber,
         },
       },
       { status: 201 },

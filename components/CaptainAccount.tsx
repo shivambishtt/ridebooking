@@ -62,7 +62,7 @@ function CaptainAccount() {
             <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-xl">
               <p className="text-zinc-400">Wallet Balance</p>
               <h1 className="text-3xl font-bold mt-2">
-                ₹{accountData?.stats?.totalEarnings}
+                ₹ {accountData?.stats?.totalEarnings || 0}
               </h1>
             </div>
           </div>

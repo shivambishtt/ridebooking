@@ -98,9 +98,9 @@ function RiderView() {
       });
       setRide((prev) => (prev ? { ...prev, status: "completed" } : prev));
 
-      // setTimeout(() => {
-      //   router.push("/");
-      // }, 5000);
+      setTimeout(() => {
+        router.push("/");
+      }, 5000);
     };
 
     socket.on("captain-arrived", handler);

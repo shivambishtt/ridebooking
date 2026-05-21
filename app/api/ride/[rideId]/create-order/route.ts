@@ -66,7 +66,7 @@ export async function POST(
       ride: ride._id,
       rider: ride.rider,
       captain: ride.captain,
-      amount: order.amount,
+      amount: ride.fare,
       orderId: order.id,
       paymentStatus: "pending",
       paymentMode: null,

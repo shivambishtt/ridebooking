@@ -75,14 +75,14 @@ function CaptainView() {
         style: { background: "#418B24" },
       });
       setRide((prev) => (prev ? { ...prev, status: "completed" } : prev));
-      // setTimeout(() => {
-      //   router.push("/rides");
-      // }, 5000);
+      setTimeout(() => {
+        router.push("/rides");
+      }, 5000);
     };
     socket.on("payment-completed", paymentHandler);
 
     return () => {
-    socket.off("payment-completed", paymentHandler);
+      socket.off("payment-completed", paymentHandler);
     };
   }, [router]);
 
