@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
 import { Ride } from "@/models/RideModel";
-import { Captain } from "@/models/CaptainModel";
 import { User } from "@/models/UserModel";
 import { Payment } from "@/models/PaymentModel";
 import { getServerSession } from "next-auth";
