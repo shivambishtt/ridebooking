@@ -4,6 +4,19 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import getIntials from "@/lib/getInitials";
 
+interface Ride {
+  _id: string;
+  pickupLocation: {
+    address: string;
+  };
+  dropLocation: {
+    address: string;
+  };
+  fare: number;
+  distance: number;
+  status: string;
+}
+
 function CaptainAccount() {
   const session = useSession();
   const [accountData, setAccountData] = useState<any>(null);
@@ -98,7 +111,7 @@ function CaptainAccount() {
             </div>
 
             <div className="space-y-4">
-              {accountData?.stats?.recentRides?.map((ride) => (
+              {accountData?.stats?.recentRides?.map((ride: Ride) => (
                 <div
                   key={ride._id}
                   className="bg-zinc-800 rounded-2xl p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:scale-[1.01] transition-all"
