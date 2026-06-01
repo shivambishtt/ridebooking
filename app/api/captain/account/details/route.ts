@@ -78,6 +78,7 @@ export async function GET(req: NextRequest) {
           name: captain.name,
           email: captain.email,
           phoneNumber: captain.phoneNumber,
+          createdAt: captain.createdAt,
         },
         stats: {
           ride,

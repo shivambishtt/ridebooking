@@ -20,6 +20,12 @@ interface Ride {
 function CaptainAccount() {
   const session = useSession();
   const [accountData, setAccountData] = useState<any>(null);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
+
   useEffect(() => {
     const fetchAccountDetails = async () => {
       try {
@@ -57,7 +63,9 @@ function CaptainAccount() {
 
               <div className="bg-zinc-800 rounded-2xl p-4 flex items-center justify-between">
                 <span className="text-zinc-400">Joined</span>
-                <span className="font-semibold">March 2026</span>
+                <span className="font-semibold">
+                  {formatDate(accountData?.captain?.createdAt)}
+                </span>
               </div>
             </div>
           </div>
