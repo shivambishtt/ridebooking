@@ -64,6 +64,7 @@ export async function GET(req: NextRequest) {
           name: user.name,
           email: user.email,
           phoneNumber: user.phoneNumber,
+          createdAt: user.createdAt,
         },
         stats: {
           ride,

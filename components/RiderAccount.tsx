@@ -8,6 +8,15 @@ function RiderAccount() {
   const session = useSession();
   const [accountData, setAccountData] = useState<any>(null);
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
   useEffect(() => {
     const fetchAccountDetails = async () => {
       try {
@@ -51,7 +60,7 @@ function RiderAccount() {
               <div className="bg-zinc-800 rounded-2xl p-4 flex items-center justify-between">
                 <span className="text-zinc-400">Favourite Ride</span>
                 <span className="font-semibold">
-                  {accountData?.stats?.favoriteRide || "Bike"}
+                  {formatDate(accountData?.rider?.createdAt)}
                 </span>
               </div>
             </div>
