@@ -17,9 +17,22 @@ interface Ride {
   status: string;
 }
 
+interface AccountData {
+  captain: {
+    name: string;
+    email: string;
+    phoneNumber: string;
+    createdAt: string;
+  };
+  stats: {
+    recentRides: Ride[];
+    totalEarnings: number;
+  };
+}
+
 function CaptainAccount() {
   const session = useSession();
-  const [accountData, setAccountData] = useState<any>(null);
+  const [accountData, setAccountData] = useState<AccountData | null>(null);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

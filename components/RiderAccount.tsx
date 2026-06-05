@@ -4,9 +4,37 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import getIntials from "@/lib/getInitials";
 
+interface Ride {
+  _id: string;
+  pickupLocation: {
+    address: string;
+  };
+  dropLocation: {
+    address: string;
+  };
+  fare: number;
+  distance: number;
+  status: string;
+}
+
+interface AccountData {
+  rider: {
+    name: string;
+    email: string;
+    phoneNumber: string;
+    createdAt: string;
+  };
+  stats: {
+    ride: Ride[];
+    totalRides: number;
+    recentRides: Ride[];
+    totalSpent: number;
+  };
+}
+
 function RiderAccount() {
   const session = useSession();
-  const [accountData, setAccountData] = useState<any>(null);
+  const [accountData, setAccountData] = useState<AccountData | null>(null);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -22,8 +50,6 @@ function RiderAccount() {
       try {
         const response = await fetch("/api/user/account/details");
         const data = await response.json();
-        console.log(data);
-
         setAccountData(data);
       } catch (error) {
         console.log("Fetch account details error", error);
@@ -123,7 +149,7 @@ function RiderAccount() {
             </div>
 
             <div className="space-y-4">
-              {accountData?.stats?.recentRides?.map((ride) => (
+              {accountData?.stats?.recentRides?.map((ride: Ride) => (
                 <div
                   key={ride._id}
                   className="bg-zinc-800 rounded-2xl p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:scale-[1.01] transition-all"
