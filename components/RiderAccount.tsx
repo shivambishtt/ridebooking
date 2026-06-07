@@ -31,6 +31,7 @@ interface AccountData {
     recentRides: Ride[];
     totalSpent: number;
   };
+  savedPlaces: Ride[];
 }
 
 function RiderAccount() {
@@ -67,7 +68,8 @@ function RiderAccount() {
         <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-2xl">
           <div className="flex flex-col items-center text-center">
             <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-4xl font-bold text-black shadow-lg">
-              {getIntials(accountData?.rider?.name)}
+              {accountData?.rider?.name &&
+                getIntials(accountData?.rider?.name ?? "")}
             </div>
 
             <h1 className="mt-3 text-2xl font-bold">
@@ -87,7 +89,8 @@ function RiderAccount() {
               <div className="bg-zinc-800 rounded-2xl p-4 flex items-center justify-between">
                 <span className="text-zinc-400">Favourite Ride</span>
                 <span className="font-semibold">
-                  {formatDate(accountData?.rider?.createdAt)}
+                  {accountData?.rider?.createdAt &&
+                    formatDate(accountData.rider.createdAt)}
                 </span>
               </div>
             </div>
