@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import getIntials from "@/lib/getInitials";
+import Link from "next/link";
 
 interface Ride {
   _id: string;
@@ -122,11 +123,11 @@ function RiderAccount() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               <Button className="bg-zinc-800 hover:bg-primary hover:text-black transition-all rounded-2xl p-5 font-semibold">
-                Book Ride
+                <Link href="/rides">Book Ride</Link>
               </Button>
 
               <Button className="bg-zinc-800 hover:bg-primary hover:text-black transition-all rounded-2xl p-5 font-semibold">
-                Ride History
+                <Link href="/account/edit">Edit Profile</Link>
               </Button>
 
               <Button className="bg-zinc-800 hover:bg-primary hover:text-black transition-all rounded-2xl p-5 font-semibold">

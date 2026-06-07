@@ -11,7 +11,7 @@ interface Ride {
   };
   dropLocation: {
     address: string;
-  };
+  };b
   fare: number;
   distance: number;
   status: string;
