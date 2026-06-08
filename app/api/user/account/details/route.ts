@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
 import { Ride } from "@/models/RideModel";
 import { User } from "@/models/UserModel";
@@ -7,7 +7,7 @@ import { getServerSession } from "next-auth";
 import mongoose from "mongoose";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     await connectDB();
     const session = await getServerSession(authOptions);

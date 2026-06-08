@@ -11,7 +11,7 @@ interface Ride {
   };
   dropLocation: {
     address: string;
-  };b
+  };
   fare: number;
   distance: number;
   status: string;
@@ -63,7 +63,8 @@ function CaptainAccount() {
         <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-2xl">
           <div className="flex flex-col items-center text-center">
             <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-4xl font-bold text-black shadow-lg">
-              {getIntials(accountData?.captain?.name)}
+              {accountData?.captain?.name &&
+                getIntials(accountData?.captain?.name)}
             </div>
             <h1 className="mt-3 text-2xl font-bold">
               {accountData?.captain?.name}
@@ -81,7 +82,8 @@ function CaptainAccount() {
               <div className="bg-zinc-800 rounded-2xl p-4 flex items-center justify-between">
                 <span className="text-zinc-400">Joined</span>
                 <span className="font-semibold">
-                  {formatDate(accountData?.captain?.createdAt)}
+                  {accountData?.captain?.createdAt &&
+                    formatDate(accountData?.captain?.createdAt)}
                 </span>
               </div>
             </div>
