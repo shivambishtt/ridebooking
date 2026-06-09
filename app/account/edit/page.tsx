@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import getInitials from "@/lib/getInitials";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface AccountData {
   rider: {
@@ -12,9 +14,13 @@ interface AccountData {
     phoneNumber: string;
     createdAt: string;
   };
+  stats: {
+    totalRides: number;
+  };
 }
 
-function EditProfilePage() {
+function EditProfile() {
+  const router = useRouter();
   const [accountData, setAccountData] = useState<AccountData | null>(null);
 
   const [name, setName] = useState("");
@@ -38,21 +44,62 @@ function EditProfilePage() {
     fetchProfile();
   }, []);
 
-  
+  const handleDetailsUpdate = async () => {
+    try {
+      setLoading(true);
+
+      const response = await fetch("/api/user/account/edit", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          phoneNumber,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data.message, {
+          position: "top-center",
+          style: {
+            background: "#D50419",
+          },
+        });
+      } else {
+        toast.success(data.message, {
+          position: "top-center",
+          style: {
+            background: "#418B24",
+          },
+        });
+        router.push("/account");
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log("Profile update error", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-black text-white p-6 md:p-10">
       <div className="max-w-7xl mx-auto">
-        <Link
-          href="/account"
-          className="text-zinc-400 hover:text-primary transition"
-        >
-          ← Back to Account
-        </Link>
-
-        <h1 className="text-4xl font-bold mt-5 mb-8">Edit Profile</h1>
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* LEFT PROFILE CARD */}
           <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-2xl">
             <div className="flex flex-col items-center text-center">
               <div className="w-24 h-24 rounded-full bg-primary flex items-center justify-center text-4xl font-bold text-black shadow-lg">
@@ -74,14 +121,14 @@ function EditProfilePage() {
                   <span className="text-zinc-400">Joined</span>
 
                   <span className="font-semibold">
-                    {formatDate(accountData.rider.createdAt)}
+                    {accountData?.rider?.createdAt &&
+                      formatDate(accountData.rider.createdAt)}
                   </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right*/}
           <div className="lg:col-span-2 bg-zinc-900 rounded-3xl p-8 border border-zinc-800 shadow-2xl">
             <h2 className="text-3xl font-bold mb-8">Personal Information</h2>
 
@@ -147,4 +194,4 @@ function EditProfilePage() {
   );
 }
 
-export default EditProfilePage;
+export default EditProfile;
