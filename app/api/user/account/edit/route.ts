@@ -9,7 +9,7 @@ export async function PATCH(req: NextRequest) {
   try {
     await connectDB();
     const session = await getServerSession(authOptions);
-    if (!session) {
+    if (!session?.user) {
       return NextResponse.json(
         { message: "Unauthorized request" },
         { status: 401 },
@@ -26,7 +26,71 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
+    let currentUser;
+
+    if (session.user.role === "user") {
+      currentUser = await User.findById(session.user.id);
+    } else {
+      currentUser = await Captain.findById(session.user.id);
+    }
+
+    if (!currentUser) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
     const updatedData: Record<string, string> = {};
+
+    if (email && email !== currentUser.email) {
+      const [existingUser, existingCaptain] = await Promise.all([
+        User.findOne({
+          email,
+          _id: {
+            $ne: session.user.id,
+          },
+        }),
+        Captain.findOne({
+          email,
+          _id: {
+            $ne: session.user.id,
+          },
+        }),
+      ]);
+      if (existingUser || existingCaptain) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Email is already taken by another user",
+          },
+          { status: 400 },
+        );
+      }
+    }
+    if (phoneNumber && phoneNumber !== currentUser.phoneNumber) {
+      const [checkUser, checkCaptain] = await Promise.all([
+        User.findOne({
+          phoneNumber,
+          _id: {
+            $ne: session.user.id,
+          },
+        }),
+        Captain.findOne({
+          phoneNumber,
+          _id: {
+            $ne: session.user.id,
+          },
+        }),
+      ]);
+
+      if (checkUser || checkCaptain) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Phone number is already taken by another user",
+          },
+          { status: 400 },
+        );
+      }
+    }
 
     if (name) updatedData.name = name;
     if (email) updatedData.email = email;
