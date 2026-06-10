@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 interface AccountData {
-  rider: {
+  profile: {
     name: string;
     email: string;
     phoneNumber: string;
@@ -31,12 +31,12 @@ function EditProfile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch("/api/user/account/details");
+        const response = await fetch("/api/account/profile");
         const data = await response.json();
         setAccountData(data);
-        setName(data.rider.name);
-        setEmail(data.rider.email);
-        setPhoneNumber(data.rider.phoneNumber);
+        setName(data.profile.name);
+        setEmail(data.profile.email);
+        setPhoneNumber(data.profile.phoneNumber);
       } catch (error) {
         console.log("Fetch profile error", error);
       }
@@ -121,8 +121,8 @@ function EditProfile() {
                   <span className="text-zinc-400">Joined</span>
 
                   <span className="font-semibold">
-                    {accountData?.rider?.createdAt &&
-                      formatDate(accountData.rider.createdAt)}
+                    {accountData?.profile?.createdAt &&
+                      formatDate(accountData.profile.createdAt)}
                   </span>
                 </div>
               </div>

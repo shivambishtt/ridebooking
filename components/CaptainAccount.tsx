@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import getIntials from "@/lib/getInitials";
+import Link from "next/link";
 
 interface Ride {
   _id: string;
@@ -116,7 +117,7 @@ function CaptainAccount() {
               </Button>
 
               <Button className="bg-zinc-800 hover:bg-primary hover:text-black transition-all rounded-2xl p-5 font-semibold">
-                Payments
+                <Link href="/account/edit">Edit Profile</Link>
               </Button>
 
               <Button className="bg-zinc-800 hover:bg-primary hover:text-black transition-all rounded-2xl p-5 font-semibold">
