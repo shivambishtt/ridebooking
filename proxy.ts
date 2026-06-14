@@ -1,20 +1,22 @@
 import { getToken } from "next-auth/jwt";
-import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 async function proxy(req: NextRequest) {
   const token = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET,
   });
+
   const role = token?.role;
-
   const { pathname } = req.nextUrl;
-  const publicRoutes = ["/", "/signin", "/signup", "/captain-signup"];
-  const captainRoutes = ["/dashboard", "/rides", "/vehicle", "/account"];
-  const userRoutes = ["/book-ride", "/rides", "/account"];
 
-  if (token && pathname.startsWith("/signin")) {
+  const publicRoutes = ["/", "/signin", "/signup", "/captain-signup"];
+
+  const captainRoutes = ["/dashboard", "/rides", "/vehicle", "/account"];
+
+  const userRoutes = ["/rides", "/account"];
+
+  if (token && pathname.startsWith("/signin") ) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
@@ -44,7 +46,7 @@ async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/signin", "/rides", "/vehicle", "/account"],
+  matcher: ["/signin", "/rides/:path*", "/vehicle/:path*", "/account/:path*"],
 };
 
 export default proxy;
