@@ -16,33 +16,29 @@ async function proxy(req: NextRequest) {
 
   const userRoutes = ["/rides", "/account"];
 
-  if (token && pathname.startsWith("/signin") ) {
+  if (!token) {
+    return NextResponse.redirect(new URL("/onboarding", req.url));
+  }
+
+  if (pathname.startsWith("/signin")) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  if (!token && captainRoutes.some((route) => pathname.startsWith(route))) {
-    return NextResponse.redirect(new URL("/onboarding", req.url));
+  if (
+    role === "captain" &&
+    !captainRoutes.some((route) => pathname.startsWith(route))
+  ) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  if (!token && !publicRoutes.includes(pathname)) {
-    return NextResponse.redirect(new URL("/onboarding", req.url));
+  if (
+    role === "user" &&
+    !userRoutes.some((route) => pathname.startsWith(route))
+  ) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
-  if (token) {
-    if (
-      role === "captain" &&
-      !captainRoutes.some((route) => pathname.startsWith(route))
-    ) {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
-    }
-
-    if (
-      role === "user" &&
-      !userRoutes.some((route) => pathname.startsWith(route))
-    ) {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
-  }
+  return NextResponse.next();
 }
 
 export const config = {

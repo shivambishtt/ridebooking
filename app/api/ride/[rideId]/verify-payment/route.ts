@@ -79,7 +79,7 @@ export async function POST(
         _id: rideId,
         status: "payment_pending",
       },
-      { $set: { status: "completed" } },
+      { $set: { status: "completed", payment: payment._id } },
       { new: true },
     );
 
