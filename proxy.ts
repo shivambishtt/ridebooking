@@ -16,7 +16,7 @@ async function proxy(req: NextRequest) {
 
   const userRoutes = ["/rides", "/account"];
 
-  if (!token) {
+  if (!token && !publicRoutes.includes(pathname)) {
     return NextResponse.redirect(new URL("/onboarding", req.url));
   }
 
