@@ -20,6 +20,10 @@ async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL("/onboarding", req.url));
   }
 
+  if (!token && publicRoutes.includes(pathname)) {
+    return NextResponse.redirect(new URL("/onboarding", req.url));
+  }
+
   if (pathname.startsWith("/signin")) {
     return NextResponse.redirect(new URL("/", req.url));
   }
@@ -42,7 +46,14 @@ async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/signin", "/rides/:path*", "/vehicle/:path*", "/account/:path*"],
+  matcher: [
+    "/signin",
+    "/signup",
+    "/captain-signup",
+    "/rides/:path*",
+    "/vehicle/:path*",
+    "/account/:path*",
+  ],
 };
 
 export default proxy;
