@@ -20,6 +20,10 @@ async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL("/onboarding", req.url));
   }
 
+  if (!token) {
+    return NextResponse.next();
+  }
+
   if (!token && publicRoutes.includes(pathname)) {
     return NextResponse.redirect(new URL("/onboarding", req.url));
   }
