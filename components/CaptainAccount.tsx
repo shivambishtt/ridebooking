@@ -1,5 +1,5 @@
 "use client";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import getIntials from "@/lib/getInitials";
@@ -124,7 +124,10 @@ function CaptainAccount() {
                 Saved Places
               </Button>
 
-              <Button className="bg-zinc-800 hover:bg-red-500 transition-all rounded-2xl p-5 font-semibold">
+              <Button
+                onClick={() => signOut()}
+                className="bg-zinc-800 hover:bg-red-500 transition-all rounded-2xl p-5 font-semibold"
+              >
                 Logout
               </Button>
             </div>
