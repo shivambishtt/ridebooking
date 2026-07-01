@@ -92,6 +92,11 @@ function RiderAccount() {
                     formatDate(accountData.rider.createdAt)}
                 </span>
               </div>
+              <div className="p-6">
+                <h2 className="text-2xl font-bold mt-6 ">
+                  Hey {session?.data?.user.name}👋
+                </h2>
+              </div>
             </div>
           </div>
         </div>
