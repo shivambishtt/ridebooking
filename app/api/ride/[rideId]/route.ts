@@ -35,8 +35,16 @@ export async function GET(
       );
     }
 
+    const totalTrips = await Ride.countDocuments({
+      captain: ride.captain._id,
+    });
+
     return NextResponse.json(
-      { message: "Ride details fetched successfully", ride },
+      {
+        message: "Ride details fetched successfully",
+        ride,
+        captainStats: { totalTrips },
+      },
       { status: 201 },
     );
   } catch (error) {

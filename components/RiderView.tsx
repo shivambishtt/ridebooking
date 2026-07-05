@@ -39,6 +39,7 @@ function RiderView() {
   const router = useRouter();
   const { rideId } = useParams();
   const [ride, setRide] = useState<Ride | null>(null);
+  const [captainTrips, setCaptainTrips] = useState<number>(0);
   const [paymentLoading, setPaymentLoading] = useState(false);
 
   useEffect(() => {
@@ -48,6 +49,7 @@ function RiderView() {
 
       if (response.ok) {
         setRide(data.ride);
+        setCaptainTrips(data.captainStats.totalTrips);
         toast.success(data.message, {
           position: "top-center",
           style: { background: "#418B24" },
@@ -220,6 +222,10 @@ function RiderView() {
                 OTP - <span className="text-primary">{otp}</span>
               </CardTitle>
             )}
+            <CardTitle className="text-md">
+              Trips Done{" "}
+              <span className="text-primary">{captainTrips || 0}</span>
+            </CardTitle>
           </CardFooter>
         </Card>
       </div>
