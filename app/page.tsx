@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 function page() {
   return (
     <div>
@@ -58,6 +60,79 @@ function page() {
           </div>
         </div>
       </section>
+
+      <footer className="border-t border-border bg-border mt-15">
+        <div className="max-w-7xl mx-auto px-6 py-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div>
+              <h2 className="text-2xl font-bold">
+                RideBook <span className="text-primary">🚕</span>
+              </h2>
+
+              <p className="text-muted-foreground mt-4 text-sm leading-6">
+                RideBook makes commuting smarter with secure payments, live
+                driver tracking, ride history, and 24×7 customer support.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
+
+              <ul className="space-y-3 text-muted-foreground">
+                <li className="hover:text-primary cursor-pointer">Home</li>
+                <li className="hover:text-primary cursor-pointer">Book Ride</li>
+                <li className="hover:text-primary cursor-pointer">
+                  Ride History
+                </li>
+                <Link href="/account">
+                  <li className="hover:text-primary cursor-pointer">Account</li>
+                </Link>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-lg mb-4">Features</h3>
+
+              <ul className="space-y-3 text-muted-foreground">
+                <li>🚖 Live Driver Tracking</li>
+                <li>💳 Secure Payments</li>
+                <li>📜 Ride History</li>
+                <li>🎧 24×7 Support</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-lg mb-4">Contact</h3>
+
+              <div className="space-y-3 text-muted-foreground text-sm">
+                <p>📧 support@ridebook.com</p>
+                <p>📞 +91 98765 43210</p>
+                <p>📍 New Delhi, India</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-border mt-12 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+            <p>© 2026 RideBook. All rights reserved.</p>
+
+            <div>
+              <span>Made with ❤️ by {"Shivam"}</span>
+            </div>
+
+            <div className="flex gap-6">
+              <span className="hover:text-primary cursor-pointer">
+                Privacy Policy
+              </span>
+
+              <span className="hover:text-primary cursor-pointer">
+                Terms of Service
+              </span>
+
+              <span className="hover:text-primary cursor-pointer">Cookies</span>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
