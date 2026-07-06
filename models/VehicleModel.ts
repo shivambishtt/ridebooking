@@ -9,6 +9,7 @@ interface IVehicle extends Document {
   vehicleColor: string;
   vehicleModel: string;
   isVerified: boolean;
+  status: "active" | "inactive";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -52,6 +53,11 @@ const vehicleSchema = new Schema<IVehicle>(
     isVerified: {
       type: Boolean,
       default: false,
+    },
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "inactive",
     },
   },
   { timestamps: true },
