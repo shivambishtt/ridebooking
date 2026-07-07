@@ -15,6 +15,7 @@ import VehicleCard from "./VehicleCard";
 import { useRouter } from "next/navigation";
 import { VehicleType } from "@/lib/types";
 import socket from "@/lib/socket";
+import { getDistanceInKm } from "@/lib/calculateDistance";
 
 const RideMap = dynamic(() => import("@/components/RideMap"), {
   ssr: false,
@@ -84,6 +85,8 @@ function RiderRides() {
       return;
     }
 
+    const distance = getDistanceInKm(fromCoordinates, toCoordinates);
+
     const response = await fetch("/api/ride/create", {
       method: "POST",
       headers: {
@@ -99,7 +102,7 @@ function RiderRides() {
           coordinates: toCoordinates,
         },
         rider: session?.data?.user.id,
-        distance: 5,
+        distance,
         vehicleType: vehicle,
       }),
     });
