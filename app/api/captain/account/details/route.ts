@@ -38,11 +38,6 @@ export async function GET(req: NextRequest) {
       captain: captainId,
     });
 
-    const completedRides = await Ride.countDocuments({
-      captain: captainId,
-      status: "completed",
-    });
-
     const cancelledRides = await Ride.countDocuments({
       captain: captainId,
       status: "cancelled",
@@ -71,6 +66,13 @@ export async function GET(req: NextRequest) {
       .sort({ createdAt: -1 })
       .limit(5);
 
+    const completedRides = await Ride.find({
+      captain: captainId,
+      status: "completed",
+    })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      ;
     return NextResponse.json(
       {
         success: true,

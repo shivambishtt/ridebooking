@@ -6,7 +6,6 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Ride } from "@/models/RideModel";
 import mongoose from "mongoose";
 import { calculateFare } from "@/lib/calculateFare";
-import { Payment } from "@/models/PaymentModel";
 
 export async function PATCH(
   req: NextRequest,

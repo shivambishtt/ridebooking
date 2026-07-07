@@ -27,6 +27,7 @@ interface AccountData {
   };
   stats: {
     recentRides: Ride[];
+    completedRides: Ride[];
     totalEarnings: number;
   };
 }
@@ -101,7 +102,7 @@ function CaptainAccount() {
             <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-xl">
               <p className="text-zinc-400">Total Rides</p>
               <h1 className="text-3xl font-bold mt-2">
-                {accountData?.stats.recentRides.length}
+                {accountData?.stats?.completedRides?.length}
               </h1>
             </div>
 
@@ -147,7 +148,7 @@ function CaptainAccount() {
             </div>
 
             <div className="space-y-4">
-              {accountData?.stats?.recentRides?.map((ride: Ride) => (
+              {accountData?.stats?.completedRides?.map((ride: Ride) => (
                 <div
                   key={ride._id}
                   className="bg-zinc-800 rounded-2xl p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:scale-[1.01] transition-all"

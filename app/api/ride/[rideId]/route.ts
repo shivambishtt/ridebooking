@@ -35,8 +35,9 @@ export async function GET(
       );
     }
 
-    const totalTrips = await Ride.countDocuments({
+    const totalTrips = await Ride.find({
       captain: ride.captain._id,
+      status: "completed",
     });
 
     return NextResponse.json(
