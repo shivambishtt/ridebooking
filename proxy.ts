@@ -12,7 +12,13 @@ async function proxy(req: NextRequest) {
 
   const publicRoutes = ["/", "/signin", "/signup", "/captain-signup"];
 
-  const captainRoutes = ["/dashboard", "/rides", "/vehicle", "/account"];
+  const captainRoutes = [
+    "/dashboard",
+    "/rides",
+    "/vehicle",
+    "/account",
+    "/garage",
+  ];
 
   const userRoutes = ["/rides", "/account"];
 
@@ -57,6 +63,7 @@ export const config = {
     "/rides/:path*",
     "/vehicle/:path*",
     "/account/:path*",
+    "/garage/:path*",
   ],
 };
 

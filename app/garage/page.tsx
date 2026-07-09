@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { VehicleType } from "@/lib/types";
+import { Switch } from "@/components/ui/switch";
 
 interface Vehicle {
   vehicle: {
@@ -18,18 +19,61 @@ interface Vehicle {
 function Garage() {
   const session = useSession();
   const [vehicleData, setVehicleData] = useState<Vehicle | null>(null);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [statusError, setStatusError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchVehicleDetails = async () => {
       const response = await fetch("/api/captain/garage/vehicle");
       const data = await response.json();
-      console.log("Vehicle data", data);
       setVehicleData(data);
     };
     if (session?.data?.user.role === "captain") {
       fetchVehicleDetails();
     }
   }, [session]);
+
+  const handleStatusToggle = async (checked: boolean) => {
+    if (!vehicleData) return;
+
+    const nextStatus = checked ? "active" : "inactive";
+    setIsUpdatingStatus(true);
+    setStatusError(null);
+
+    try {
+      const response = await fetch("/api/captain/garage/vehicle", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: nextStatus }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to update vehicle status");
+      }
+
+      setVehicleData((prev) =>
+        prev
+          ? {
+              ...prev,
+              vehicle: {
+                ...prev.vehicle,
+                status: nextStatus,
+              },
+            }
+          : prev,
+      );
+    } catch (error) {
+      setStatusError(
+        error instanceof Error ? error.message : "Unable to update vehicle status",
+      );
+    } finally {
+      setIsUpdatingStatus(false);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
@@ -49,16 +93,26 @@ function Garage() {
                 </p>
               </div>
 
-              <span
-                className={`rounded-full px-4 py-1.5 text-sm font-medium ${
-                  vehicleData.vehicle.status === "active"
-                    ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                    : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-                }`}
-              >
-                {vehicleData.vehicle.status}
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Inactive
+                </span>
+                <Switch
+                  checked={vehicleData.vehicle.status === "active"}
+                  onCheckedChange={handleStatusToggle}
+                  disabled={isUpdatingStatus}
+                />
+                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Active
+                </span>
+              </div>
             </div>
+
+            {statusError && (
+              <div className="border-t border-gray-200 px-6 py-3 text-sm text-red-600 dark:border-neutral-800 dark:text-red-400">
+                {statusError}
+              </div>
+            )}
 
             <div className="grid gap-6 p-6 md:grid-cols-2">
               <div className="rounded-xl border border-gray-200 bg-gray-50 p-5 dark:border-neutral-800 dark:bg-neutral-950">
