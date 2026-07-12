@@ -71,82 +71,120 @@ export default function Vehicle() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <div className="w-full max-w-md space-y-6">
-        <h1 className="text-3xl font-bold text-center">Add Your Vehicle 🚗</h1>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="vehicleType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Vehicle Type</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="vehicleColor"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Color</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="vehicleNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Number</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="vehicleBrand"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Brand</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="vehicleModel"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Model</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+    <div className="min-h-screen mt-10">
+      <h1 className="text-5xl font-bold tracking-tight mx-6">
+        Add <span className="text-primary">Vehicle</span>
+      </h1>
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-10 text-center"></div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Adding..." : "Add Vehicle"}
-            </Button>
-          </form>
-        </Form>
+        <div className="rounded-3xl border border-zinc-800 bg-[#1c1c1c] p-8 shadow-2xl">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <div className="grid gap-6 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="vehicleType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base">Vehicle Type</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder=""
+                          className="h-12 rounded-xl border-zinc-700 bg-[#111111]"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="vehicleNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base">
+                        Registration Number
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder=""
+                          className="h-12 rounded-xl border-zinc-700 bg-[#111111] uppercase"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="vehicleBrand"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base">Vehicle Brand</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder=""
+                          className="h-12 rounded-xl border-zinc-700 bg-[#111111]"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="vehicleModel"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base">Vehicle Model</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder=""
+                          className="h-12 rounded-xl border-zinc-700 bg-[#111111]"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="vehicleColor"
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <FormLabel className="text-base">Vehicle Color</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder=""
+                          className="h-12 rounded-xl border-zinc-700 bg-[#111111]"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={loading}
+                className="h-12 w-full rounded-xl bg-yellow-500 text-black font-semibold hover:bg-yellow-400 transition-all"
+              >
+                {loading ? "Adding Vehicle..." : "Add Vehicle"}
+              </Button>
+            </form>
+          </Form>
+        </div>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { VehicleType } from "@/lib/types";
+import { VehicleTypeLabel } from "@/lib/types";
 import { Switch } from "@/components/ui/switch";
 
 interface Vehicle {
@@ -68,7 +69,9 @@ function Garage() {
       );
     } catch (error) {
       setStatusError(
-        error instanceof Error ? error.message : "Unable to update vehicle status",
+        error instanceof Error
+          ? error.message
+          : "Unable to update vehicle status",
       );
     } finally {
       setIsUpdatingStatus(false);
@@ -120,7 +123,7 @@ function Garage() {
                   Vehicle Type
                 </p>
                 <h3 className="mt-1 text-lg font-semibold text-gray-900 dark:text-white">
-                  {vehicleData.vehicle.vehicleType}
+                  {VehicleTypeLabel[vehicleData.vehicle.vehicleType]}
                 </h3>
               </div>
 
