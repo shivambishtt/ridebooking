@@ -67,19 +67,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const vehicleAlreadyRegistered = await Vehicle.findOne({
-      captain: captainId,
-    });
-
-    if (vehicleAlreadyRegistered) {
-      return NextResponse.json(
-        {
-          message: "Vehicle already registered",
-        },
-        { status: 409 },
-      );
-    }
-
     const vehicle = await Vehicle.create({
       vehicleType,
       vehicleNumber,
@@ -87,7 +74,8 @@ export async function POST(req: NextRequest) {
       vehicleColor,
       vehicleModel,
       captain: captainId,
-      isVerified: false,
+      isVerified: true,
+      status: "inactive",
     });
 
     return NextResponse.json(

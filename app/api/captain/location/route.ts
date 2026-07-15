@@ -57,9 +57,9 @@ export async function GET() {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const captain = await Captain.findById(session.user.id).select(
-      "isAvailable",
-    );
+    const captain = await Captain.findById(session.user.id)
+      .populate("vehicle")
+      .select("isAvailable vehicle");
 
     if (!captain) {
       return NextResponse.json(
@@ -67,6 +67,21 @@ export async function GET() {
         { status: 404 },
       );
     }
+
+    if (!captain.vehicle) {
+      return NextResponse.json(
+        { message: "No vehicle selected" },
+        { status: 404 },
+      );
+    }
+
+    if (captain.vehicle.status !== "active") {
+      return NextResponse.json(
+        { message: "Please select an active vehicle" },
+        { status: 400 },
+      );
+    }
+
     return NextResponse.json({ isAvailable: captain.isAvailable });
   } catch (error) {
     return NextResponse.json(
