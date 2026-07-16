@@ -3,6 +3,7 @@ import connectDB from "@/lib/connectDB";
 import { Ride } from "@/models/RideModel";
 import crypto from "crypto";
 import { Payment } from "@/models/PaymentModel";
+import { Captain } from "@/models/CaptainModel";
 
 export async function POST(
   req: NextRequest,
@@ -83,8 +84,16 @@ export async function POST(
       { new: true },
     );
 
+    const updatedWalletBalance = await Captain.findByIdAndUpdate(
+      ride.captain,
+      {
+        $inc: { walletBalance: payment.amount },
+      },
+      { new: true },
+    );
+
     return NextResponse.json(
-      { message: "Payment successful", payment },
+      { message: "Payment successful", payment, updatedWalletBalance },
       { status: 200 },
     );
   } catch (error) {

@@ -1,13 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
 import { Ride } from "@/models/RideModel";
 import { Captain } from "@/models/CaptainModel";
-import { Payment } from "@/models/PaymentModel";
 import { getServerSession } from "next-auth";
-import mongoose from "mongoose";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     await connectDB();
     const session = await getServerSession(authOptions);
@@ -43,22 +41,9 @@ export async function GET(req: NextRequest) {
       status: "cancelled",
     });
 
-    const walletBalance = await Payment.aggregate([
-      {
-        $match: {
-          captain: new mongoose.Types.ObjectId(captainId),
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          totalEarnings: { $sum: "$amount" },
-        },
-      },
-    ]);
+    const wallet = await Captain.findById(captainId).select("walletBalance");
 
-    const totalEarnings =
-      walletBalance.length > 0 ? walletBalance[0].totalEarnings : 0;
+    const totalEarnings = wallet ? wallet.walletBalance : 0;
 
     const recentRides = await Ride.find({
       captain: captainId,
@@ -71,8 +56,8 @@ export async function GET(req: NextRequest) {
       status: "completed",
     })
       .sort({ createdAt: -1 })
-      .limit(5)
-      ;
+      .limit(5);
+
     return NextResponse.json(
       {
         success: true,
@@ -81,6 +66,7 @@ export async function GET(req: NextRequest) {
           email: captain.email,
           phoneNumber: captain.phoneNumber,
           createdAt: captain.createdAt,
+          walletBalance: captain.walletBalance,
         },
         stats: {
           ride,
