@@ -10,7 +10,7 @@ export async function GET() {
   try {
     await connectDB();
     const session = await getServerSession(authOptions);
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     if (session.user.role !== "captain") {
