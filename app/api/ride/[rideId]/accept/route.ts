@@ -4,7 +4,7 @@ import { Ride } from "@/models/RideModel";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../auth/[...nextauth]/route";
 import { Captain } from "@/models/CaptainModel";
-import generateOTP from "@/lib/generateOtp";
+import generateOTP from "@/lib/generateOTP";
 
 export async function PATCH(
   req: NextRequest,
