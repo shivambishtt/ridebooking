@@ -20,7 +20,6 @@ const vehicleSchema = new Schema<IVehicle>(
       type: Schema.Types.ObjectId,
       ref: "Captain",
       required: true,
-      unique: true,
     },
     vehicleType: {
       type: String,

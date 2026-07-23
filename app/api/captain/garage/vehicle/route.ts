@@ -17,14 +17,19 @@ export async function GET() {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const vehicle = await Vehicle.findOne({
+    const vehicles = await Vehicle.find({
       captain: session.user.id,
-    });
+    }).select(
+      "vehicleType vehicleModel vehicleColor vehicleNumber vehicleBrand isVerified status",
+    );
 
-    if (!vehicle) {
-      return NextResponse.json({ error: "Vehicle not found" }, { status: 404 });
+    if (vehicles.length === 0) {
+      return NextResponse.json(
+        { message: "Vehicle not found" },
+        { status: 404 },
+      );
     }
-    return NextResponse.json({ success: true, vehicle }, { status: 200 });
+    return NextResponse.json({ success: true, vehicles }, { status: 200 });
   } catch (error) {
     console.log("Garage Vehicle API Error:", error);
     return NextResponse.json(
@@ -46,15 +51,17 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const vehicle = await Vehicle.findOne({
+    const { vehicleId, status } = await req.json();
+
+    const vehicles = await Vehicle.findOne({
+      _id: vehicleId,
       captain: session.user.id,
     });
 
-    if (!vehicle) {
+    if (!vehicles) {
       return NextResponse.json({ error: "Vehicle not found" }, { status: 404 });
     }
 
-    const { status } = await req.json();
     if (!VALID_STATUS.includes(status)) {
       return NextResponse.json(
         { error: "Invalid status value" },
@@ -62,15 +69,23 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    if (vehicle.status !== status) {
-      vehicle.status = status;
-      await vehicle.save();
+    const checkActiveVehicle = await Vehicle.findOne({
+      captain: session.user.id,
+      status: "active",
+    });
+
+    if (!checkActiveVehicle && vehicles.status !== status) {
+      vehicles.status = status;
+      await vehicles.save();
     }
 
     return NextResponse.json(
       {
         success: true,
-        message: `Vehicle status set as ${vehicle.status}`,
+        message: `Vehicle status set as ${vehicles.status}`,
+        vehicle: {
+          _id: vehicles._id,
+        },
       },
       { status: 200 },
     );

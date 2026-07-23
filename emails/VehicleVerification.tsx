@@ -16,7 +16,7 @@ interface VehicleVerificationProps {
   otp: string;
 }
 
-export default function VehicleVerificationOTP({
+export default function pVehicleVerificationOTP({
   captainName,
   otp,
 }: VehicleVerificationProps) {

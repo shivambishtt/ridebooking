@@ -81,7 +81,6 @@ const captainSchema = new Schema<ICaptain>(
     },
     socketId: {
       type: String,
-      // required: true,
     },
   },
   { timestamps: true },
