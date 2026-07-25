@@ -4,8 +4,6 @@ import connectDB from "@/lib/connectDB";
 import validNumberPlate from "@/lib/validNumberPlate";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
-import { sendVehicleVerificationOTP } from "@/services/email.service";
-import generateOTP from "@/lib/generateOTP";
 
 export async function POST(req: NextRequest) {
   try {
@@ -79,16 +77,6 @@ export async function POST(req: NextRequest) {
       isVerified: false,
       status: "inactive",
     });
-
-    console.log(vehicle);
-
-    // const otp = generateOTP();
-
-    // await sendVehicleVerificationOTP({
-    //   email: session?.user?.email,
-    //   captainName: session?.user?.name,
-    //   otp,
-    // });
 
     return NextResponse.json(
       {

@@ -3,6 +3,7 @@ import connectDB from "@/lib/connectDB";
 import { Vehicle } from "@/models/VehicleModel";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { vehicleFormSchema } from "@/validations/vehicleValidation";
 
 const VALID_STATUS = ["active", "inactive"] as const;
 
@@ -47,18 +48,18 @@ export async function PATCH(req: NextRequest) {
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
     if (session.user.role !== "captain") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const { vehicleId, status } = await req.json();
-
-    const vehicles = await Vehicle.findOne({
+    const vehicle = await Vehicle.findOne({
       _id: vehicleId,
       captain: session.user.id,
     });
 
-    if (!vehicles) {
+    if (!vehicle) {
       return NextResponse.json({ error: "Vehicle not found" }, { status: 404 });
     }
 
@@ -69,32 +70,40 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    const checkActiveVehicle = await Vehicle.findOne({
+    const activeVehicle = await Vehicle.findOne({
       captain: session.user.id,
       status: "active",
     });
 
-    if (!checkActiveVehicle && vehicles.status !== status) {
-      vehicles.status = status;
-      await vehicles.save();
+    if (
+      status === "active" &&
+      activeVehicle &&
+      activeVehicle._id.toString() !== vehicleId
+    ) {
+      return NextResponse.json(
+        {
+          message: "Another vehicle is already active. Deactivate it first.",
+        },
+        { status: 400 },
+      );
     }
-
     return NextResponse.json(
       {
         success: true,
-        message: `Vehicle status set as ${vehicles.status}`,
+        message: `Vehicle status set as ${vehicle.status}`,
         vehicle: {
-          _id: vehicles._id,
+          _id: vehicle._id,
+          status: vehicle.status,
         },
       },
       { status: 200 },
     );
   } catch (error) {
-    console.log("Garage Vehicle Status Update API Error:", error);
+    console.error("Garage Vehicle Status Update API Error:", error);
+
     return NextResponse.json(
       {
-        message: " Internal Server Error",
-        error,
+        error: "Internal Server Error",
       },
       { status: 500 },
     );
