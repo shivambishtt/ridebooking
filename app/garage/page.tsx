@@ -48,6 +48,7 @@ function Garage() {
       });
 
       const data = await response.json();
+      console.log(data,"data from PATCH API")
       if (!response.ok) {
         throw new Error(data.error || "Unable to update vehicle status");
       }
@@ -60,11 +61,9 @@ function Garage() {
         ),
       );
     } catch (error) {
-      setStatusError(
-        error instanceof Error
-          ? error.message
-          : "Unable to update vehicle status",
-      );
+      const message =
+        error instanceof Error ? error.message : "Something went wrong";
+      setStatusError(message);
     } finally {
       setIsUpdatingStatus(false);
     }

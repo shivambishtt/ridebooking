@@ -54,6 +54,14 @@ export async function PATCH(req: NextRequest) {
     }
 
     const { vehicleId, status } = await req.json();
+
+    if (!VALID_STATUS.includes(status)) {
+      return NextResponse.json(
+        { error: "Invalid status value" },
+        { status: 400 },
+      );
+    }
+
     const vehicle = await Vehicle.findOne({
       _id: vehicleId,
       captain: session.user.id,
@@ -63,30 +71,21 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "Vehicle not found" }, { status: 404 });
     }
 
-    if (!VALID_STATUS.includes(status)) {
-      return NextResponse.json(
-        { error: "Invalid status value" },
-        { status: 400 },
-      );
+    if (status === "active") {
+      const activeVehicle = await Vehicle.findOne({
+        captain: session.user.id,
+        status: "active",
+      });
+
+      if (activeVehicle && activeVehicle._id.toString() !== vehicleId) {
+        activeVehicle.status = "inactive";
+        await activeVehicle.save();
+      }
     }
 
-    const activeVehicle = await Vehicle.findOne({
-      captain: session.user.id,
-      status: "active",
-    });
-
-    if (
-      status === "active" &&
-      activeVehicle &&
-      activeVehicle._id.toString() !== vehicleId
-    ) {
-      return NextResponse.json(
-        {
-          message: "Another vehicle is already active. Deactivate it first.",
-        },
-        { status: 400 },
-      );
-    }
+    vehicle.status = status;
+    await vehicle.save();
+    
     return NextResponse.json(
       {
         success: true,
